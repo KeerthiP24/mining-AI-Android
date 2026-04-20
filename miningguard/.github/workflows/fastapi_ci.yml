@@ -1,0 +1,49 @@
+name: FastAPI CI
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'backend/**'
+      - '.github/workflows/fastapi_ci.yml'
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'backend/**'
+
+jobs:
+  test:
+    name: Test FastAPI Backend
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set Up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        working-directory: backend
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
+
+      - name: Lint with Black
+        working-directory: backend
+        run: black --check app/
+
+      - name: Sort Imports Check
+        working-directory: backend
+        run: isort --check-only app/
+
+      - name: Run Tests
+        working-directory: backend
+        env:
+          DEBUG: "true"
+          FIREBASE_CREDENTIALS_PATH: "test-credentials.json"
+          FIREBASE_PROJECT_ID: "test-project"
+        run: pytest tests/ -v --tb=short

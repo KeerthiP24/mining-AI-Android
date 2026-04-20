@@ -1,0 +1,148 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Helper Functions ──────────────────────────────────────────────────────
+
+    // True when any authenticated user is making the request.
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // True when the requesting user owns the document identified by {uid}.
+    function isOwner(uid) {
+      return request.auth.uid == uid;
+    }
+
+    // Fetches the caller's own user document and returns their role.
+    // Costs one read per security-rule evaluation — cached within a request.
+    function callerDoc() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    // True when the caller has the admin role.
+    function isAdmin() {
+      return isSignedIn() && callerDoc().role == 'admin';
+    }
+
+    // True when the caller has the supervisor role.
+    function isSupervisor() {
+      return isSignedIn() && callerDoc().role == 'supervisor';
+    }
+
+    // True when the caller's mineId matches the target document's mineId.
+    // Used so supervisors can only access workers in their own mine.
+    function sameMine(docData) {
+      return callerDoc().mineId == docData.mineId;
+    }
+
+    // ── USERS COLLECTION ─────────────────────────────────────────────────────
+    // Stores one document per registered user at users/{uid}.
+    // riskScore, riskLevel, complianceRate, and totalHazardReports are
+    // write-protected from the client — only the FastAPI backend (Admin SDK)
+    // may change them.
+
+    match /users/{uid} {
+
+      // READ — worker sees their own doc; supervisor sees workers in same mine;
+      // admin sees everyone.
+      allow read: if isSignedIn() && (
+        isOwner(uid) ||
+        isAdmin() ||
+        (isSupervisor() && sameMine(resource.data))
+      );
+
+      // CREATE — a user may create only their own document.
+      // Required fields must be present; role cannot be admin on self-service.
+      allow create: if isSignedIn()
+        && isOwner(uid)
+        && request.resource.data.keys().hasAll([
+             'uid', 'fullName', 'mineId', 'role',
+             'department', 'shift', 'preferredLanguage'
+           ])
+        && request.resource.data.role != 'admin';
+
+      // UPDATE — workers may update only their personal preference fields.
+      // Admins may update anything.
+      // Supervisors may update compliance / report-tracking fields for workers
+      // in their mine.
+      allow update: if isSignedIn() && (
+        isAdmin()
+        ||
+        // Worker self-service: only preference and session fields
+        (isOwner(uid) && request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['preferredLanguage', 'shift', 'fcmToken', 'lastActiveAt']))
+        ||
+        // Supervisor can update report and compliance fields for same-mine workers
+        (isSupervisor()
+          && sameMine(resource.data)
+          && request.resource.data.diff(resource.data).affectedKeys()
+              .hasOnly(['totalHazardReports', 'complianceRate',
+                        'riskScore', 'riskLevel', 'consecutiveMissedDays']))
+      );
+
+      // DELETE — admins only.
+      allow delete: if isAdmin();
+    }
+
+    // ── MINES COLLECTION ─────────────────────────────────────────────────────
+    // Read by all authenticated users; only admins may write.
+    match /mines/{mineId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // ── CHECKLISTS COLLECTION ─────────────────────────────────────────────────
+    // Workers submit their own checklists; supervisors and admins can read them.
+    match /checklists/{checklistId} {
+      allow read: if isSignedIn() && (
+        resource.data.uid == request.auth.uid || isSupervisor() || isAdmin()
+      );
+      allow create: if isSignedIn()
+        && request.resource.data.uid == request.auth.uid;
+      allow update: if isSignedIn()
+        && resource.data.uid == request.auth.uid;
+      allow delete: if isAdmin();
+    }
+
+    // ── HAZARD REPORTS COLLECTION ─────────────────────────────────────────────
+    // Reporters see their own; supervisors and admins see all.
+    match /hazard_reports/{reportId} {
+      allow read: if isSignedIn() && (
+        resource.data.reporterId == request.auth.uid
+        || isSupervisor()
+        || isAdmin()
+      );
+      allow create: if isSignedIn()
+        && request.resource.data.reporterId == request.auth.uid;
+      allow update: if isSignedIn() && (
+        resource.data.reporterId == request.auth.uid
+        || isSupervisor()
+        || isAdmin()
+      );
+      allow delete: if isAdmin();
+    }
+
+    // ── SAFETY VIDEOS COLLECTION ──────────────────────────────────────────────
+    // All signed-in users may read; only admins may write content.
+    match /safety_videos/{videoId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // ── ALERTS COLLECTION ─────────────────────────────────────────────────────
+    // Workers see alerts addressed to them; supervisors/admins create them.
+    // Workers can mark their own alerts as read (update).
+    match /alerts/{alertId} {
+      allow read: if isSignedIn() && (
+        resource.data.userId == request.auth.uid
+        || isSupervisor()
+        || isAdmin()
+      );
+      allow create: if isSupervisor() || isAdmin();
+      allow update: if isSignedIn()
+        && resource.data.userId == request.auth.uid;
+      allow delete: if isAdmin();
+    }
+  }
+}

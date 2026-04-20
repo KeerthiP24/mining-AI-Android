@@ -1,0 +1,42 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // ── Helper Functions ─────────────────────────────────────────────────────
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isValidMediaFile() {
+      return request.resource.contentType.matches('image/.*')
+          || request.resource.contentType.matches('video/.*')
+          || request.resource.contentType.matches('audio/.*');
+    }
+
+    function isUnderSizeLimit() {
+      // 100 MB maximum per file
+      return request.resource.size <= 100 * 1024 * 1024;
+    }
+
+    // ── Hazard Report Media ───────────────────────────────────────────────────
+    match /reports/{mineId}/{reportId}/{fileName} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated()
+          && isValidMediaFile()
+          && isUnderSizeLimit();
+      allow delete: if isAuthenticated();
+    }
+
+    // ── Video Thumbnails ──────────────────────────────────────────────────────
+    match /thumbnails/{fileName} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
+    }
+
+    // ── Default: deny all other paths ────────────────────────────────────────
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -1,0 +1,1 @@
+# MiningGuard AI Backend - Tests

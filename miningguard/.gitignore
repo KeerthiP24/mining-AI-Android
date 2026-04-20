@@ -1,0 +1,40 @@
+# ── Flutter ─────────────────────────────────────────────────────────────────
+mobile/.dart_tool/
+mobile/.flutter-plugins
+mobile/.flutter-plugins-dependencies
+mobile/build/
+mobile/.packages
+mobile/pubspec.lock  # Include this for reproducible builds on teams — remove this line
+
+# Firebase generated files
+mobile/lib/firebase_options.dart   # REMOVE THIS LINE once configured — track in git
+
+# Android local config
+mobile/android/local.properties
+mobile/android/key.properties
+mobile/android/*.jks
+
+# ── Python / FastAPI ─────────────────────────────────────────────────────────
+backend/__pycache__/
+backend/**/__pycache__/
+backend/*.pyc
+backend/*.pyo
+backend/venv/
+backend/.venv/
+backend/.env                       # Never commit real env values
+backend/firebase-service-account.json  # Never commit service account key
+backend/models/*.pkl               # Trained model files (too large for git)
+backend/models/*.h5
+
+# ── IDE ──────────────────────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# ── CI artifacts ─────────────────────────────────────────────────────────────
+coverage/
+.coverage
+htmlcov/

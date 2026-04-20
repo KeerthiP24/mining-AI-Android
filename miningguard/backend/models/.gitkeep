@@ -1,0 +1,2 @@
+# This directory holds trained ML model files (.pkl, .h5)
+# These files are too large for git — add them manually or via CI/CD

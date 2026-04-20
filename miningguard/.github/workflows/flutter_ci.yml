@@ -1,0 +1,53 @@
+name: Flutter CI
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'mobile/**'
+      - '.github/workflows/flutter_ci.yml'
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'mobile/**'
+
+jobs:
+  build-and-test:
+    name: Build & Test Flutter App
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set Up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.19.0'
+          channel: 'stable'
+
+      - name: Get Dependencies
+        working-directory: mobile
+        run: flutter pub get
+
+      - name: Verify Formatting
+        working-directory: mobile
+        run: dart format --output=none --set-exit-if-changed lib/
+
+      - name: Run Dart Analyzer
+        working-directory: mobile
+        run: flutter analyze --fatal-infos
+
+      - name: Run Unit Tests
+        working-directory: mobile
+        run: flutter test test/unit/ --coverage
+
+      - name: Build APK (Debug)
+        working-directory: mobile
+        # Requires google-services.json; skip in CI with placeholder
+        run: |
+          if [ -f "android/app/google-services.json" ]; then
+            flutter build apk --debug
+          else
+            echo "google-services.json not present — skipping APK build in CI."
+          fi
