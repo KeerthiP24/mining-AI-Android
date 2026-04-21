@@ -91,7 +91,7 @@ class AuthService {
       case 'invalid-phone-number':
         return 'Invalid phone number. Please check and try again.';
       default:
-        return 'Sign in failed. Please try again.';
+        return 'Sign in failed [$code]. Please try again.';
     }
   }
 }

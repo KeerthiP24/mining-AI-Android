@@ -9,7 +9,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:go_router/go_router.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:miningguard/core/router/app_router.dart';
 import 'package:miningguard/firebase_options.dart';
@@ -80,8 +79,8 @@ void main() {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-    FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
-    FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
+    FirebaseAuth.instance.useAuthEmulator('127.0.0.1', 9099);
+    FirebaseFirestore.instance.useFirestoreEmulator('127.0.0.1', 8081);
   });
 
   tearDown(() async {

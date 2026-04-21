@@ -14,11 +14,11 @@ dependencies:
     sdk: flutter
 
   # Firebase
-  firebase_core: ^2.27.0
-  firebase_auth: ^4.17.4
-  cloud_firestore: ^4.15.4
-  firebase_storage: ^11.6.5
-  firebase_messaging: ^14.7.17
+  firebase_core: ^4.7.0
+  firebase_auth: ^6.4.0
+  cloud_firestore: ^6.3.0
+  firebase_storage: ^13.3.0
+  firebase_messaging: ^16.2.0
 
   # State Management
   flutter_riverpod: ^2.5.1
@@ -43,7 +43,7 @@ dependencies:
   # Media
   image_picker: ^1.0.7
   speech_to_text: ^6.6.0
-  flutter_sound: ^9.2.13
+  flutter_sound: ^9.30.0
   cached_network_image: ^3.3.1
   youtube_player_flutter: ^8.1.2
 
@@ -65,8 +65,8 @@ dev_dependencies:
   riverpod_generator: ^2.3.9
   hive_generator: ^2.0.1
   mockito: ^5.4.4
-  fake_cloud_firestore: ^2.4.4
-  firebase_auth_mocks: ^0.13.0
+  fake_cloud_firestore: ^4.1.0
+  firebase_auth_mocks: ^0.15.1
 
 flutter:
   uses-material-design: true

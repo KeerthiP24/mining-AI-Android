@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -19,19 +22,24 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize Firebase
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  // Register background message handler before anything else
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  // Connect to local emulators in debug mode
+  if (kDebugMode) {
+    await FirebaseAuth.instance.useAuthEmulator('127.0.0.1', 9099);
+    FirebaseFirestore.instance.useFirestoreEmulator('127.0.0.1', 8081);
+  }
 
-  // Initialize Hive for offline storage
+  // FCM background handler (only on mobile — not available on web)
+  if (!kIsWeb) {
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  }
+
   await Hive.initFlutter();
 
   runApp(
-    // ProviderScope wraps the entire app — required for Riverpod
     const ProviderScope(
       child: MiningGuardApp(),
     ),
@@ -53,7 +61,6 @@ class MiningGuardApp extends ConsumerWidget {
         darkTheme: AppTheme.darkTheme,
         themeMode: ThemeMode.system,
         routerConfig: router,
-        // Localization support — languages added in Phase 9
         supportedLocales: const [
           Locale('en'),
           Locale('hi'),

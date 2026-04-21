@@ -7,6 +7,10 @@ import 'package:go_router/go_router.dart';
 import 'package:miningguard/core/router/app_router.dart';
 import 'package:miningguard/features/auth/providers/auth_providers.dart';
 import 'package:miningguard/features/auth/services/auth_service.dart';
+import 'package:miningguard/shared/models/user_model.dart';
+
+const _amber = Color(0xFFF5A623);
+const _bg = Color(0xFF1A1A2E);
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -25,6 +29,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
   bool _passwordVisible = false;
   bool _emailLoading = false;
   String? _emailError;
+  // toggle between Sign In and Create Account
+  bool _isRegister = false;
 
   // Phone tab
   final _phoneController = TextEditingController();
@@ -54,27 +60,56 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
     super.dispose();
   }
 
-  // ── Email sign-in ─────────────────────────────────────────────────────────
+  // ── Email sign-in / register ──────────────────────────────────────────────
 
-  Future<void> _signInWithEmail() async {
+  Future<void> _handleEmail() async {
     setState(() {
       _emailLoading = true;
       _emailError = null;
     });
     try {
-      await ref.read(authServiceProvider).signInWithEmail(
-            _emailController.text,
-            _passwordController.text,
-          );
+      if (_isRegister) {
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: _emailController.text.trim(),
+          password: _passwordController.text,
+        );
+      } else {
+        await ref.read(authServiceProvider).signInWithEmail(
+              _emailController.text,
+              _passwordController.text,
+            );
+      }
       await _navigateAfterAuth();
     } on AuthException catch (e) {
       setState(() => _emailError = e.message);
+    } on FirebaseAuthException catch (e) {
+      setState(() => _emailError = _mapError(e.code));
     } finally {
       if (mounted) setState(() => _emailLoading = false);
     }
   }
 
-  // ── Phone OTP sign-in ─────────────────────────────────────────────────────
+  String _mapError(String code) {
+    switch (code) {
+      case 'email-already-in-use':
+        return 'An account with this email already exists. Please sign in.';
+      case 'weak-password':
+        return 'Password must be at least 6 characters.';
+      case 'invalid-email':
+        return 'Enter a valid email address.';
+      case 'wrong-password':
+      case 'invalid-credential':
+        return 'Incorrect password. Please try again.';
+      case 'user-not-found':
+        return 'No account found. Tap "Create Account" to register.';
+      case 'too-many-requests':
+        return 'Too many attempts. Please wait and try again.';
+      default:
+        return 'Auth error [$code]. Please try again.';
+    }
+  }
+
+  // ── Phone OTP ─────────────────────────────────────────────────────────────
 
   Future<void> _sendOtp() async {
     setState(() {
@@ -168,18 +203,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
 
   @override
   Widget build(BuildContext context) {
-    const bg = Color(0xFF1A1A2E);
-    const amber = Color(0xFFF5A623);
-
     return Scaffold(
-      backgroundColor: bg,
+      backgroundColor: _bg,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Column(
             children: [
               const SizedBox(height: 32),
-              const Icon(Icons.engineering, size: 64, color: amber),
+              const Icon(Icons.engineering, size: 64, color: _amber),
               const SizedBox(height: 12),
               const Text(
                 'MiningGuard',
@@ -190,24 +222,24 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                   letterSpacing: 1.2,
                 ),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 6),
               const Text(
-                'login.subtitle',
-                style: TextStyle(fontSize: 16, color: Colors.white70),
+                'AI-Powered Mining Safety Companion',
+                style: TextStyle(fontSize: 14, color: Colors.white54),
               ),
               const SizedBox(height: 32),
               TabBar(
                 controller: _tabController,
-                indicatorColor: amber,
-                labelColor: amber,
+                indicatorColor: _amber,
+                labelColor: _amber,
                 unselectedLabelColor: Colors.white54,
                 labelStyle: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                 ),
                 tabs: const [
-                  Tab(text: 'login.tab.email'),
-                  Tab(text: 'login.tab.phone'),
+                  Tab(text: 'Email'),
+                  Tab(text: 'Phone OTP'),
                 ],
               ),
               const SizedBox(height: 24),
@@ -223,7 +255,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                           setState(() => _passwordVisible = !_passwordVisible),
                       loading: _emailLoading,
                       error: _emailError,
-                      onSignIn: _signInWithEmail,
+                      isRegister: _isRegister,
+                      onToggleMode: () =>
+                          setState(() => _isRegister = !_isRegister),
+                      onSubmit: _handleEmail,
                     ),
                     _PhoneTab(
                       phoneController: _phoneController,
@@ -257,7 +292,9 @@ class _EmailTab extends StatelessWidget {
     required this.onTogglePassword,
     required this.loading,
     required this.error,
-    required this.onSignIn,
+    required this.isRegister,
+    required this.onToggleMode,
+    required this.onSubmit,
   });
 
   final TextEditingController emailController;
@@ -266,7 +303,9 @@ class _EmailTab extends StatelessWidget {
   final VoidCallback onTogglePassword;
   final bool loading;
   final String? error;
-  final VoidCallback onSignIn;
+  final bool isRegister;
+  final VoidCallback onToggleMode;
+  final VoidCallback onSubmit;
 
   @override
   Widget build(BuildContext context) {
@@ -276,13 +315,13 @@ class _EmailTab extends StatelessWidget {
         children: [
           _Field(
             controller: emailController,
-            label: 'login.email',
+            label: 'Email address',
             keyboardType: TextInputType.emailAddress,
           ),
           const SizedBox(height: 16),
           _Field(
             controller: passwordController,
-            label: 'login.password',
+            label: isRegister ? 'Create password (min 6 chars)' : 'Password',
             obscure: !passwordVisible,
             suffix: IconButton(
               icon: Icon(
@@ -294,18 +333,49 @@ class _EmailTab extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           if (error != null)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 8),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.red.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.redAccent.withValues(alpha: 0.4)),
+              ),
               child: Text(
                 error!,
                 style: const TextStyle(color: Colors.redAccent, fontSize: 14),
               ),
             ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 16),
           _PrimaryButton(
-            label: 'login.signIn',
+            label: isRegister ? 'Create Account' : 'Sign In',
             loading: loading,
-            onPressed: loading ? null : onSignIn,
+            onPressed: loading ? null : onSubmit,
+          ),
+          const SizedBox(height: 16),
+          // Toggle between Sign In and Create Account
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                isRegister
+                    ? 'Already have an account? '
+                    : "Don't have an account? ",
+                style: const TextStyle(color: Colors.white54, fontSize: 14),
+              ),
+              GestureDetector(
+                onTap: onToggleMode,
+                child: Text(
+                  isRegister ? 'Sign In' : 'Create Account',
+                  style: const TextStyle(
+                    color: _amber,
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.underline,
+                    decorationColor: _amber,
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -362,7 +432,7 @@ class _PhoneTab extends StatelessWidget {
               Expanded(
                 child: _Field(
                   controller: phoneController,
-                  label: 'login.phone',
+                  label: 'Mobile number',
                   keyboardType: TextInputType.phone,
                 ),
               ),
@@ -371,20 +441,20 @@ class _PhoneTab extends StatelessWidget {
           const SizedBox(height: 16),
           if (!otpSent) ...[
             _PrimaryButton(
-              label: 'login.sendOtp',
+              label: 'Send OTP',
               loading: loading,
               onPressed: loading ? null : onSendOtp,
             ),
           ] else ...[
             _Field(
               controller: otpController,
-              label: 'login.enterOtp',
+              label: 'Enter 6-digit OTP',
               keyboardType: TextInputType.number,
               maxLength: 6,
             ),
             const SizedBox(height: 16),
             _PrimaryButton(
-              label: 'login.verifyOtp',
+              label: 'Verify OTP',
               loading: loading,
               onPressed: loading ? null : onVerifyOtp,
             ),
@@ -393,11 +463,12 @@ class _PhoneTab extends StatelessWidget {
               onPressed: resendCountdown > 0 ? null : onResend,
               child: Text(
                 resendCountdown > 0
-                    ? 'login.resendIn $resendCountdown s'
-                    : 'login.resend',
+                    ? 'Resend OTP in ${resendCountdown}s'
+                    : 'Resend OTP',
                 style: TextStyle(
-                  color:
-                      resendCountdown > 0 ? Colors.white38 : const Color(0xFFF5A623),
+                  color: resendCountdown > 0
+                      ? Colors.white38
+                      : _amber,
                   fontSize: 16,
                 ),
               ),
@@ -408,7 +479,8 @@ class _PhoneTab extends StatelessWidget {
               padding: const EdgeInsets.only(top: 8),
               child: Text(
                 error!,
-                style: const TextStyle(color: Colors.redAccent, fontSize: 14),
+                style:
+                    const TextStyle(color: Colors.redAccent, fontSize: 14),
               ),
             ),
         ],
@@ -417,7 +489,7 @@ class _PhoneTab extends StatelessWidget {
   }
 }
 
-// ── Shared form widgets ────────────────────────────────────────────────────────
+// ── Shared form widgets ───────────────────────────────────────────────────────
 
 class _Field extends StatelessWidget {
   const _Field({
@@ -453,7 +525,7 @@ class _Field extends StatelessWidget {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xFFF5A623)),
+          borderSide: const BorderSide(color: _amber),
         ),
         suffixIcon: suffix,
         counterText: '',
@@ -480,8 +552,8 @@ class _PrimaryButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFFF5A623),
-          foregroundColor: const Color(0xFF1A1A2E),
+          backgroundColor: _amber,
+          foregroundColor: _bg,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
@@ -492,7 +564,7 @@ class _PrimaryButton extends StatelessWidget {
                 height: 24,
                 child: CircularProgressIndicator(
                   strokeWidth: 2.5,
-                  color: Color(0xFF1A1A2E),
+                  color: _bg,
                 ),
               )
             : Text(

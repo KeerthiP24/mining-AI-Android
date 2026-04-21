@@ -38,7 +38,7 @@ Flutter · Firebase · FastAPI · Scikit-learn · TensorFlow · Riverpod · GoRo
 ## Phase Status
 
 - [x] Phase 1 — Project Foundation & Setup
-- [ ] Phase 2 — Authentication & User Management
+- [x] Phase 2 — Authentication & User Management
 - [ ] Phase 3 — Daily Safety Checklist
 - [ ] Phase 4 — Hazard Reporting System
 - [ ] Phase 5 — Safety Education Module

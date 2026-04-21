@@ -501,15 +501,26 @@ class _ShiftPickerSheetState extends State<_ShiftPickerSheet> {
           ),
           const SizedBox(height: 16),
           ...['morning', 'afternoon', 'night'].map((shift) {
-            return RadioListTile<String>(
-              value: shift,
-              groupValue: _selected,
-              onChanged: (v) => setState(() => _selected = v!),
-              title: Text(
-                _label(shift),
-                style: const TextStyle(color: Colors.white, fontSize: 16),
+            return GestureDetector(
+              onTap: () => setState(() => _selected = shift),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4),
+                child: Row(
+                  children: [
+                    Radio<String>(
+                      value: shift,
+                      groupValue: _selected,
+                      onChanged: (v) => setState(() => _selected = v!),
+                      activeColor: const Color(0xFFF5A623),
+                    ),
+                    Text(
+                      _label(shift),
+                      style:
+                          const TextStyle(color: Colors.white, fontSize: 16),
+                    ),
+                  ],
+                ),
               ),
-              activeColor: const Color(0xFFF5A623),
             );
           }),
           const SizedBox(height: 8),

@@ -145,7 +145,7 @@ class _LanguageCard extends StatelessWidget {
         duration: const Duration(milliseconds: 150),
         decoration: BoxDecoration(
           color: selected
-              ? const Color(0xFFF5A623).withOpacity(0.15)
+              ? const Color(0xFFF5A623).withValues(alpha: 0.15)
               : const Color(0xFF252545),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(

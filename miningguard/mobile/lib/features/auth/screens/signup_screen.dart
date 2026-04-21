@@ -122,7 +122,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
 
               // Department
               DropdownButtonFormField<String>(
-                value: _department,
+                initialValue: _department,
                 decoration: _inputDecoration('signup.department'),
                 dropdownColor: const Color(0xFF252545),
                 style: const TextStyle(color: Colors.white, fontSize: 18),
@@ -170,7 +170,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
 
               // Role
               DropdownButtonFormField<UserRole>(
-                value: _role,
+                initialValue: _role,
                 decoration: _inputDecoration('signup.role'),
                 dropdownColor: const Color(0xFF252545),
                 style: const TextStyle(color: Colors.white, fontSize: 18),
@@ -323,7 +323,7 @@ class _ShiftChip extends StatelessWidget {
           alignment: Alignment.center,
           decoration: BoxDecoration(
             color: selected
-                ? const Color(0xFFF5A623).withOpacity(0.2)
+                ? const Color(0xFFF5A623).withValues(alpha: 0.2)
                 : Colors.transparent,
             borderRadius: BorderRadius.circular(10),
             border: Border.all(

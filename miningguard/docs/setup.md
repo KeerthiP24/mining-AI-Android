@@ -1,101 +1,180 @@
-# MiningGuard — Developer Setup Guide
+# MiningGuard — Developer Setup & Run Guide
 
 ## Prerequisites
 
-| Tool | Version | Install |
-|------|---------|---------|
-| Flutter | 3.19+ | https://flutter.dev/docs/get-started/install |
+| Tool | Version | Notes |
+|------|---------|-------|
+| Flutter | 3.19+ | `flutter --version` to check |
 | Dart | 3.3+ | Bundled with Flutter |
-| Python | 3.11+ | https://python.org |
-| Node.js | 18+ | https://nodejs.org (for Firebase CLI) |
+| Node.js | 18+ | Required for Firebase CLI |
 | Firebase CLI | Latest | `npm install -g firebase-tools` |
-| FlutterFire CLI | Latest | `dart pub global activate flutterfire_cli` |
+| Java | 11 or 17 | **Do not use Java 21+** — Firestore emulator JAR crashes on Java 21+ |
+
+> Check your Java version: `java -version`
+> If you have Java 21+, install Java 17 from https://adoptium.net and point `JAVA_HOME` to it.
 
 ---
 
-## 1. Clone the Repository
+## Project Structure
 
-```bash
-git clone https://github.com/YOUR_ORG/miningguard.git
-cd miningguard
+```
+miningguard/
+├── mobile/      Flutter app (all Phase 2 code lives here)
+├── firebase/    firebase.json, Firestore rules, indexes
+├── backend/     FastAPI AI backend (Phase 6+)
+└── docs/        This file and architecture docs
 ```
 
-## 2. Create Firebase Project
+---
 
-1. Go to https://console.firebase.google.com
-2. Create a new project named `miningguard-dev`
-3. Enable the following services:
-   - **Authentication** → Sign-in methods: Email/Password and Phone
-   - **Firestore** → Start in test mode (rules deployed below)
-   - **Storage** → Start in test mode
-   - **Cloud Messaging** → No setup needed, enabled by default
+## Running the App (Phase 1 & 2)
 
-## 3. Configure Flutter with Firebase
+You need **two terminals open at the same time**.
+
+### Terminal 1 — Firebase Emulators
 
 ```bash
-cd mobile
-flutterfire configure --project=miningguard-dev
+cd miningguard/firebase
+firebase emulators:start --only auth,firestore --project mininggaurd
 ```
 
-This generates `lib/firebase_options.dart` with your real project values.
+Leave this running. You should see:
 
-## 4. Set Up Flutter App
-
-```bash
-cd mobile
-flutter pub get
-flutter pub run build_runner build --delete-conflicting-outputs
-flutter analyze
-flutter test
+```
+│ Authentication │ 127.0.0.1:9099 │
+│ Firestore      │ 127.0.0.1:8081 │
 ```
 
-## 5. Set Up FastAPI Backend
+The Emulator UI opens at http://127.0.0.1:4000 — use it to inspect users and Firestore documents.
+
+> If port 4000 is taken, the UI won't load but the emulators still work fine.
+> If port 8080 is taken, make sure you're running from the `firebase/` folder so it picks up `firebase.json` (which sets Firestore to port 8081).
+
+### Terminal 2 — Flutter App
 
 ```bash
-cd backend
-python -m venv venv
-source venv/bin/activate   # Windows: venv\Scripts\activate
-pip install -r requirements.txt
-pip install -r requirements-dev.txt
+cd miningguard/mobile
+flutter pub get          # first time only
+flutter run -d chrome    # runs in Chrome (web)
 ```
 
-Download your Firebase service account key:
-- Firebase Console → Project Settings → Service Accounts → Generate new private key
-- Save as `backend/firebase-service-account.json`
-- **Never commit this file to git**
+The app opens in Chrome at `http://localhost:PORT`.
 
-```bash
-cp .env.example .env
-# Edit .env with your project values
-uvicorn app.main:app --reload --port 8000
+---
+
+## First-Time Login Flow
+
+The emulators start empty — there are no users. You must **create an account first**.
+
+1. Open the app in Chrome
+2. On the login screen, tap **"Create Account"** (below the Sign In button)
+3. Enter any email and password (minimum 6 characters)
+4. You'll be redirected to the **Signup / Onboarding screen**
+5. Fill in: Full Name, Mine ID, Department, Shift, Role
+6. Choose your preferred language
+7. You land on the **Worker Home** screen
+
+On future runs, use **Sign In** with the same credentials.
+
+---
+
+## Role-Based Routing
+
+After login, the app routes based on the `role` field in Firestore:
+
+| Role | Destination |
+|------|-------------|
+| `worker` | `/worker/home` |
+| `supervisor` | `/supervisor/dashboard` |
+| `admin` | `/admin/panel` |
+
+To test supervisor/admin routing, go to the Emulator UI → Firestore → `users` collection → find your document → change the `role` field → sign out and sign back in.
+
+---
+
+## Firebase Configuration
+
+The app's Firebase config is in [mobile/lib/firebase_options.dart](../mobile/lib/firebase_options.dart).
+
+It is already configured for the `mininggaurd` Firebase project. In debug mode, the app automatically connects to the local emulators (Auth on 9099, Firestore on 8081) instead of the real Firebase project.
+
+To use **real Firebase** instead of emulators, remove or comment out this block in [mobile/lib/main.dart](../mobile/lib/main.dart):
+
+```dart
+if (kDebugMode) {
+  await FirebaseAuth.instance.useAuthEmulator('127.0.0.1', 9099);
+  FirebaseFirestore.instance.useFirestoreEmulator('127.0.0.1', 8081);
+}
 ```
 
-Confirm: Open http://localhost:8000/health — should return `{"status": "healthy"}`.
+Then ensure the real Firebase project has:
+- Authentication → Sign-in method → **Email/Password** enabled
+- **Firestore Database** created (start in test mode)
 
-## 6. Deploy Firebase Rules
+---
+
+## Deploying Firestore Security Rules
 
 ```bash
-cd firebase
+cd miningguard/firebase
 firebase login
-firebase use miningguard-dev
-firebase deploy --only firestore:rules,firestore:indexes,storage:rules
+firebase use mininggaurd
+firebase deploy --only firestore:rules,firestore:indexes
 ```
-
-## 7. Start Firebase Emulators (Optional — for local development)
-
-```bash
-cd firebase
-firebase emulators:start
-```
-
-Emulator UI available at http://localhost:4000
 
 ---
 
-## Troubleshooting
+## Integration Tests
 
-**`google-services.json` not found:** Run `flutterfire configure` again.
+Tests run against the emulators. Start the emulators first (Terminal 1 above), then:
 
-**Firebase Admin SDK error:** Ensure `firebase-service-account.json` is in `backend/` and `FIREBASE_CREDENTIALS_PATH` in `.env` points to it.
+```bash
+cd miningguard/mobile
+flutter test integration_test/auth_flow_test.dart
+```
 
-**Flutter build fails:** Run `flutter clean && flutter pub get` then retry.
+Five tests are included:
+1. Email sign-in routes worker to `/worker/home`
+2. Wrong password shows error and stays on login
+3. New user goes through onboarding → language selection → home
+4. Supervisor routes to `/supervisor/dashboard`
+5. Sign out clears session and returns to `/login`
+
+---
+
+## Common Issues
+
+**`firestore: Port 8080 is not open`**
+You ran the emulator from the wrong folder. Always run from `miningguard/firebase/`, not from `mobile/`.
+
+**`demo-no-project` in emulator output**
+Always pass `--project mininggaurd` when starting emulators.
+
+**`Authentication failed` / `Sign in failed`**
+- Make sure emulators are running before the Flutter app
+- Use **Create Account** on first run (emulators start empty)
+- Make sure you ran from `miningguard/firebase/` with `--project mininggaurd`
+
+**`No Directionality widget found`**
+Hot restart the app (`R` in Flutter terminal). This clears stale widget tree state.
+
+**`flutter_sound_web` compile error**
+Run `flutter pub upgrade` — the `web` package version conflict is resolved by the current `pubspec.yaml`.
+
+**Firestore emulator crashes immediately (exit code 3221225786)**
+You are running Java 21+. Downgrade to Java 17.
+
+---
+
+## Phase Status
+
+- [x] Phase 1 — Project Foundation & Setup
+- [x] Phase 2 — Authentication & User Management
+- [ ] Phase 3 — Daily Safety Checklist
+- [ ] Phase 4 — Hazard Reporting System
+- [ ] Phase 5 — Safety Education Module
+- [ ] Phase 6 — AI Backend & Machine Learning
+- [ ] Phase 7 — Dashboards & Analytics
+- [ ] Phase 8 — Notifications & Real-Time Sync
+- [ ] Phase 9 — Multi-Language, Offline & Security
+- [ ] Phase 10 — Testing, Deployment & Launch

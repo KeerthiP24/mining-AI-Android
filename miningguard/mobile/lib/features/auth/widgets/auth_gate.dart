@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:miningguard/core/services/fcm_token_service.dart';
 import 'package:miningguard/features/auth/providers/auth_providers.dart';
-import 'package:miningguard/features/auth/services/user_repository.dart';
 
 /// Wraps the router shell to handle:
 /// - Loading state while Firebase resolves auth
@@ -19,11 +18,12 @@ class AuthGate extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final authAsync = ref.watch(authStateProvider);
 
-    // Show a splash-style loader while Firebase resolves the session
+    // Show a bare splash while Firebase resolves the session.
+    // Cannot use Scaffold here — MaterialApp hasn't mounted yet.
     if (authAsync.isLoading) {
-      return const Scaffold(
-        backgroundColor: Color(0xFF1A1A2E),
-        body: Center(
+      return const ColoredBox(
+        color: Color(0xFF1A1A2E),
+        child: Center(
           child: CircularProgressIndicator(color: Color(0xFFF5A623)),
         ),
       );
