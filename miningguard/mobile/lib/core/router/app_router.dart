@@ -6,6 +6,13 @@ import 'package:miningguard/features/auth/screens/language_selection_screen.dart
 import 'package:miningguard/features/auth/screens/login_screen.dart';
 import 'package:miningguard/features/auth/screens/profile_screen.dart';
 import 'package:miningguard/features/auth/screens/signup_screen.dart';
+import 'package:miningguard/features/checklist/screens/checklist_history_screen.dart';
+import 'package:miningguard/features/checklist/screens/checklist_screen.dart';
+import 'package:miningguard/features/checklist/screens/checklist_success_screen.dart';
+import 'package:miningguard/features/hazard_report/models/hazard_report_model.dart';
+import 'package:miningguard/features/hazard_report/screens/my_reports_screen.dart';
+import 'package:miningguard/features/hazard_report/screens/report_detail_screen.dart';
+import 'package:miningguard/features/hazard_report/screens/report_input_screen.dart';
 import 'package:miningguard/shared/models/user_model.dart';
 
 // ── Route constants ───────────────────────────────────────────────────────────
@@ -22,8 +29,10 @@ class AppRoutes {
   static const String workerHome = '/worker/home';
   static const String checklist = '/worker/checklist';
   static const String checklistHistory = '/worker/checklist/history';
+  static const String checklistSuccess = '/worker/checklist/success';
   static const String reportHazard = '/worker/report';
   static const String myReports = '/worker/reports';
+  static const String reportDetail = '/worker/reports/detail';
   static const String education = '/worker/education';
   static const String workerProfile = '/worker/profile';
 
@@ -32,6 +41,7 @@ class AppRoutes {
   static const String workersList = '/supervisor/workers';
   static const String workerDetail = '/supervisor/workers/:uid';
   static const String pendingReports = '/supervisor/reports';
+  static const String supervisorReportDetail = '/supervisor/reports/detail';
 
   // Admin routes
   static const String adminPanel = '/admin/panel';
@@ -69,9 +79,33 @@ class HomeScreen extends StatelessWidget {
           children: [
             const Icon(Icons.home, size: 64, color: Colors.amber),
             const SizedBox(height: 16),
-            const Text('Worker Home — Phase 3 coming soon'),
+            const Text('Worker Dashboard'),
             const SizedBox(height: 24),
-            ElevatedButton(
+            FilledButton.icon(
+              onPressed: () => context.go(AppRoutes.checklist),
+              icon: const Icon(Icons.checklist),
+              label: const Text("Today's Safety Checklist"),
+            ),
+            const SizedBox(height: 12),
+            FilledButton.icon(
+              onPressed: () => context.go(AppRoutes.reportHazard),
+              icon: const Icon(Icons.warning_amber),
+              label: const Text('Report Hazard'),
+            ),
+            const SizedBox(height: 12),
+            OutlinedButton.icon(
+              onPressed: () => context.go(AppRoutes.myReports),
+              icon: const Icon(Icons.list_alt),
+              label: const Text('My Hazard Reports'),
+            ),
+            const SizedBox(height: 12),
+            OutlinedButton.icon(
+              onPressed: () => context.go(AppRoutes.checklistHistory),
+              icon: const Icon(Icons.history),
+              label: const Text('Checklist History'),
+            ),
+            const SizedBox(height: 12),
+            TextButton(
               onPressed: () => context.go(AppRoutes.workerProfile),
               child: const Text('My Profile'),
             ),
@@ -95,8 +129,14 @@ class SupervisorDashboardScreen extends StatelessWidget {
           children: [
             const Icon(Icons.supervisor_account, size: 64, color: Colors.amber),
             const SizedBox(height: 16),
-            const Text('Supervisor Dashboard — Phase 3 coming soon'),
+            const Text('Supervisor Dashboard'),
             const SizedBox(height: 24),
+            FilledButton.icon(
+              onPressed: () => context.go(AppRoutes.pendingReports),
+              icon: const Icon(Icons.warning_amber),
+              label: const Text('Mine Reports'),
+            ),
+            const SizedBox(height: 12),
             ElevatedButton(
               onPressed: () => context.go(AppRoutes.workerProfile),
               child: const Text('My Profile'),
@@ -154,6 +194,41 @@ class PlaceholderScreen extends StatelessWidget {
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.titleMedium,
             ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── Supervisor mine reports screen ────────────────────────────────────────────
+
+class _SupervisorReportsScreen extends ConsumerWidget {
+  const _SupervisorReportsScreen();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final userAsync = ref.watch(currentUserModelProvider);
+    final user = userAsync.valueOrNull;
+    if (user == null) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Mine Reports')),
+        body: const Center(child: CircularProgressIndicator()),
+      );
+    }
+    // Reuse MyReportsScreen layout but for supervisor: show all mine reports
+    // Full implementation in a later phase; for now shows a placeholder with mine ID
+    return Scaffold(
+      appBar: AppBar(title: const Text('Mine Reports')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.warning_amber, size: 64, color: Colors.amber),
+            const SizedBox(height: 16),
+            Text('Mine: ${user.mineId}'),
+            const SizedBox(height: 8),
+            const Text('Hazard reports for your mine appear here'),
           ],
         ),
       ),
@@ -234,28 +309,38 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: AppRoutes.checklist,
-        builder: (_, state) =>
-            PlaceholderScreen(routeName: 'Daily Checklist'),
+        builder: (_, __) => const ChecklistScreen(),
       ),
       GoRoute(
         path: AppRoutes.checklistHistory,
-        builder: (_, state) =>
-            PlaceholderScreen(routeName: 'Checklist History'),
+        builder: (_, __) => const ChecklistHistoryScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.checklistSuccess,
+        builder: (_, state) {
+          final score = (state.extra as double?) ?? 0.0;
+          return ChecklistSuccessScreen(complianceScore: score);
+        },
       ),
       GoRoute(
         path: AppRoutes.reportHazard,
-        builder: (_, state) =>
-            PlaceholderScreen(routeName: 'Report Hazard'),
+        builder: (_, __) => const ReportInputScreen(),
       ),
       GoRoute(
         path: AppRoutes.myReports,
-        builder: (_, state) =>
-            PlaceholderScreen(routeName: 'My Hazard Reports'),
+        builder: (_, __) => const MyReportsScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.reportDetail,
+        builder: (_, state) {
+          final report = state.extra as HazardReportModel;
+          return ReportDetailScreen(report: report);
+        },
       ),
       GoRoute(
         path: AppRoutes.education,
         builder: (_, state) =>
-            PlaceholderScreen(routeName: 'Safety Education'),
+            const PlaceholderScreen(routeName: 'Safety Education'),
       ),
 
       // Supervisor
@@ -265,7 +350,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: AppRoutes.workersList,
-        builder: (_, __) => PlaceholderScreen(routeName: 'Workers List'),
+        builder: (_, __) => const PlaceholderScreen(routeName: 'Workers List'),
       ),
       GoRoute(
         path: AppRoutes.workerDetail,
@@ -276,7 +361,14 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: AppRoutes.pendingReports,
-        builder: (_, __) => PlaceholderScreen(routeName: 'Pending Reports'),
+        builder: (_, __) => const _SupervisorReportsScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.supervisorReportDetail,
+        builder: (_, state) {
+          final report = state.extra as HazardReportModel;
+          return ReportDetailScreen(report: report);
+        },
       ),
 
       // Admin
@@ -286,16 +378,16 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: AppRoutes.userManagement,
-        builder: (_, __) => PlaceholderScreen(routeName: 'User Management'),
+        builder: (_, __) => const PlaceholderScreen(routeName: 'User Management'),
       ),
       GoRoute(
         path: AppRoutes.contentManagement,
         builder: (_, __) =>
-            PlaceholderScreen(routeName: 'Content Management'),
+            const PlaceholderScreen(routeName: 'Content Management'),
       ),
       GoRoute(
         path: AppRoutes.analytics,
-        builder: (_, __) => PlaceholderScreen(routeName: 'Analytics'),
+        builder: (_, __) => const PlaceholderScreen(routeName: 'Analytics'),
       ),
     ],
     errorBuilder: (context, state) => Scaffold(

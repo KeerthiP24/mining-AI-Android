@@ -137,9 +137,9 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
               const SizedBox(height: 20),
 
               // Shift
-              Text(
+              const Text(
                 'signup.shift',
-                style: const TextStyle(color: Colors.white70, fontSize: 16),
+                style: TextStyle(color: Colors.white70, fontSize: 16),
               ),
               const SizedBox(height: 8),
               Row(
@@ -175,14 +175,14 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                 dropdownColor: const Color(0xFF252545),
                 style: const TextStyle(color: Colors.white, fontSize: 18),
                 iconEnabledColor: Colors.white54,
-                items: [
+                items: const [
                   DropdownMenuItem(
                     value: UserRole.worker,
-                    child: const Text('Worker'),
+                    child: Text('Worker'),
                   ),
                   DropdownMenuItem(
                     value: UserRole.supervisor,
-                    child: const Text('Supervisor'),
+                    child: Text('Supervisor'),
                   ),
                 ],
                 onChanged: (v) => setState(() => _role = v!),

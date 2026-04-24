@@ -19,6 +19,7 @@ class UserModel {
     this.complianceRate = 1.0,
     this.totalHazardReports = 0,
     this.consecutiveMissedDays = 0,
+    this.lastChecklistDate,
     this.fcmToken,
     required this.createdAt,
     required this.lastActiveAt,
@@ -36,6 +37,7 @@ class UserModel {
   final double complianceRate;    // 0.0–1.0
   final int totalHazardReports;
   final int consecutiveMissedDays;
+  final String? lastChecklistDate;  // "YYYY-MM-DD"
   final String? fcmToken;
   final DateTime createdAt;
   final DateTime lastActiveAt;
@@ -57,6 +59,7 @@ class UserModel {
       complianceRate: (data['complianceRate'] as num?)?.toDouble() ?? 1.0,
       totalHazardReports: data['totalHazardReports'] as int? ?? 0,
       consecutiveMissedDays: data['consecutiveMissedDays'] as int? ?? 0,
+      lastChecklistDate: data['lastChecklistDate'] as String?,
       fcmToken: data['fcmToken'] as String?,
       createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
       lastActiveAt:
@@ -78,6 +81,7 @@ class UserModel {
       'complianceRate': complianceRate,
       'totalHazardReports': totalHazardReports,
       'consecutiveMissedDays': consecutiveMissedDays,
+      if (lastChecklistDate != null) 'lastChecklistDate': lastChecklistDate,
       if (fcmToken != null) 'fcmToken': fcmToken,
       'createdAt': Timestamp.fromDate(createdAt),
       'lastActiveAt': Timestamp.fromDate(lastActiveAt),
@@ -96,6 +100,7 @@ class UserModel {
     double? complianceRate,
     int? totalHazardReports,
     int? consecutiveMissedDays,
+    String? lastChecklistDate,
     String? fcmToken,
     DateTime? lastActiveAt,
   }) {
@@ -113,6 +118,7 @@ class UserModel {
       totalHazardReports: totalHazardReports ?? this.totalHazardReports,
       consecutiveMissedDays:
           consecutiveMissedDays ?? this.consecutiveMissedDays,
+      lastChecklistDate: lastChecklistDate ?? this.lastChecklistDate,
       fcmToken: fcmToken ?? this.fcmToken,
       createdAt: createdAt,
       lastActiveAt: lastActiveAt ?? this.lastActiveAt,

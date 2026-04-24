@@ -500,29 +500,33 @@ class _ShiftPickerSheetState extends State<_ShiftPickerSheet> {
             ),
           ),
           const SizedBox(height: 16),
-          ...['morning', 'afternoon', 'night'].map((shift) {
-            return GestureDetector(
-              onTap: () => setState(() => _selected = shift),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4),
-                child: Row(
-                  children: [
-                    Radio<String>(
-                      value: shift,
-                      groupValue: _selected,
-                      onChanged: (v) => setState(() => _selected = v!),
-                      activeColor: const Color(0xFFF5A623),
+          RadioGroup<String>(
+            groupValue: _selected,
+            onChanged: (v) { if (v != null) setState(() => _selected = v); },
+            child: Column(
+              children: ['morning', 'afternoon', 'night'].map((shift) {
+                return GestureDetector(
+                  onTap: () => setState(() => _selected = shift),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: Row(
+                      children: [
+                        Radio<String>(
+                          value: shift,
+                          activeColor: const Color(0xFFF5A623),
+                        ),
+                        Text(
+                          _label(shift),
+                          style:
+                              const TextStyle(color: Colors.white, fontSize: 16),
+                        ),
+                      ],
                     ),
-                    Text(
-                      _label(shift),
-                      style:
-                          const TextStyle(color: Colors.white, fontSize: 16),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          }),
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
           const SizedBox(height: 8),
           SizedBox(
             width: double.infinity,

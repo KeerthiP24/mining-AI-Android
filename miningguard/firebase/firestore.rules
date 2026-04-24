@@ -69,9 +69,10 @@ service cloud.firestore {
       allow update: if isSignedIn() && (
         isAdmin()
         ||
-        // Worker self-service: only preference and session fields
+        // Worker self-service: preference, session, and checklist tracking fields
         (isOwner(uid) && request.resource.data.diff(resource.data).affectedKeys()
-            .hasOnly(['preferredLanguage', 'shift', 'fcmToken', 'lastActiveAt']))
+            .hasOnly(['preferredLanguage', 'shift', 'fcmToken', 'lastActiveAt',
+                      'lastChecklistDate', 'consecutiveMissedDays']))
         ||
         // Supervisor can update report and compliance fields for same-mine workers
         (isSupervisor()
@@ -86,38 +87,79 @@ service cloud.firestore {
     }
 
     // ── MINES COLLECTION ─────────────────────────────────────────────────────
-    // Read by all authenticated users; only admins may write.
+    // Read by all authenticated users.
+    // Workers may create/update their own mine doc (timezone seed on first login).
+    // Only admins may delete.
     match /mines/{mineId} {
       allow read: if isSignedIn();
-      allow write: if isAdmin();
+      allow create: if isSignedIn() && callerDoc().mineId == mineId;
+      allow update: if isSignedIn() && callerDoc().mineId == mineId;
+      allow delete: if isAdmin();
+    }
+
+    // ── CHECKLIST TEMPLATES COLLECTION ───────────────────────────────────────────
+    // Master checklist definitions. Read by authenticated users in their mine.
+    // CREATE — any authenticated user may seed a template for their own mine
+    //   (auto-seed on first checklist load when admin hasn't pre-seeded).
+    // UPDATE/DELETE — admin only (admins control template versioning).
+    match /checklist_templates/{templateId} {
+      // resource == null when the document doesn't exist yet (get on missing doc);
+      // allow the read so the caller can detect absence and trigger auto-seed.
+      allow read: if isSignedIn()
+        && (resource == null || resource.data.mineId == callerDoc().mineId);
+      allow create: if isSignedIn()
+        && request.resource.data.mineId == callerDoc().mineId;
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
     }
 
     // ── CHECKLISTS COLLECTION ─────────────────────────────────────────────────
-    // Workers submit their own checklists; supervisors and admins can read them.
+    // Workers submit their own checklists; supervisors in same mine can read;
+    // admins have full access.
     match /checklists/{checklistId} {
       allow read: if isSignedIn() && (
-        resource.data.uid == request.auth.uid || isSupervisor() || isAdmin()
+        resource == null
+        || resource.data.uid == request.auth.uid
+        || (isSupervisor() && sameMine(resource.data))
+        || isAdmin()
       );
       allow create: if isSignedIn()
         && request.resource.data.uid == request.auth.uid;
       allow update: if isSignedIn()
-        && resource.data.uid == request.auth.uid;
+        && resource.data.uid == request.auth.uid
+        && resource.data.status != 'submitted';
+      allow delete: if isAdmin();
+    }
+
+    // ── REMINDERS COLLECTION ──────────────────────────────────────────────────
+    // Written by the client on checklist creation; Phase 8 delivers FCM push.
+    match /reminders/{reminderId} {
+      allow read: if isSignedIn()
+        && (resource == null || resource.data.uid == request.auth.uid);
+      allow create: if isSignedIn()
+        && request.resource.data.uid == request.auth.uid;
+      allow update: if isAdmin();
       allow delete: if isAdmin();
     }
 
     // ── HAZARD REPORTS COLLECTION ─────────────────────────────────────────────
-    // Reporters see their own; supervisors and admins see all.
+    // Reporter (uid field) sees their own; supervisors see same-mine reports;
+    // admins see all. Only supervisors/admins may update status.
     match /hazard_reports/{reportId} {
       allow read: if isSignedIn() && (
-        resource.data.reporterId == request.auth.uid
-        || isSupervisor()
+        resource.data.uid == request.auth.uid
+        || (isSupervisor() && sameMine(resource.data))
         || isAdmin()
       );
       allow create: if isSignedIn()
-        && request.resource.data.reporterId == request.auth.uid;
+        && request.resource.data.uid == request.auth.uid;
       allow update: if isSignedIn() && (
-        resource.data.reporterId == request.auth.uid
-        || isSupervisor()
+        // Worker may update their own pending report (e.g. add media URL after upload)
+        (resource.data.uid == request.auth.uid
+          && resource.data.status == 'pending'
+          && request.resource.data.diff(resource.data).affectedKeys()
+              .hasOnly(['mediaUrls', 'voiceNoteUrl', 'description']))
+        || (isSupervisor() && sameMine(resource.data))
         || isAdmin()
       );
       allow delete: if isAdmin();

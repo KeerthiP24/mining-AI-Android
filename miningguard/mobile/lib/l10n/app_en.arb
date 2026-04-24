@@ -1,0 +1,76 @@
+{
+  "@@locale": "en",
+
+  "checklist_title": "Today''s Checklist",
+  "checklist_submit_button": "Submit Checklist",
+  "checklist_submit_confirm_title": "Submit your checklist?",
+  "checklist_submit_confirm_body": "You cannot change your answers after submitting.",
+  "checklist_submit_confirm_yes": "Submit",
+  "checklist_submit_confirm_no": "Keep editing",
+  "checklist_mandatory_badge": "Required",
+  "checklist_progress_chip": "{completed} / {total}",
+  "@checklist_progress_chip": {
+    "placeholders": {
+      "completed": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "checklist_mandatory_incomplete_hint": "Complete all required items to submit",
+
+  "checklist_category_ppe": "Personal Protective Equipment",
+  "checklist_category_machinery": "Machinery",
+  "checklist_category_environment": "Environment",
+  "checklist_category_emergency": "Emergency",
+  "checklist_category_supervisor": "Supervisor Duties",
+
+  "checklist_ppe_helmet": "Hard hat fitted and in good condition",
+  "checklist_ppe_boots": "Safety boots worn",
+  "checklist_ppe_vest": "High-visibility vest worn",
+  "checklist_ppe_gloves": "Safety gloves available",
+  "checklist_ppe_lamp_charged": "Cap lamp charged and functional",
+  "checklist_ppe_scsr_present": "Self-rescuer on person",
+
+  "checklist_mach_preshift_done": "Pre-shift machinery inspection completed",
+  "checklist_mach_guards_in_place": "All guards and covers in place",
+  "checklist_mach_no_leaks": "No visible oil or hydraulic leaks",
+
+  "checklist_env_gas_detector_ok": "Gas detector reading within safe limits (CH₄ < 1%)",
+  "checklist_env_roof_inspected": "Roof and side walls inspected — no loose material",
+  "checklist_env_ventilation_ok": "Ventilation is adequate",
+  "checklist_env_walkways_clear": "Walkways and exits are clear",
+
+  "checklist_emg_exit_known": "Nearest emergency exit location confirmed",
+  "checklist_emg_comms_working": "Communication device working",
+  "checklist_emg_first_aid_located": "Nearest first aid kit location known",
+
+  "checklist_sup_attendance_confirmed": "All workers signed in for shift",
+  "checklist_sup_toolbox_talk_done": "Toolbox safety briefing conducted",
+  "checklist_sup_dgms_permits_reviewed": "DGMS permit-to-work documents reviewed",
+  "checklist_sup_high_risk_permits_checked": "High-risk work authorisations verified",
+  "checklist_sup_muster_point_communicated": "Muster point communicated to crew",
+
+  "checklist_success_title": "Checklist Submitted",
+  "checklist_success_excellent": "Excellent — full compliance today!",
+  "checklist_success_good": "Good — all critical items checked.",
+  "checklist_success_fair": "Some items were missed. Stay safe.",
+  "checklist_success_poor": "Multiple items missed. Please speak with your supervisor.",
+  "checklist_success_back_home": "Back to Home",
+
+  "checklist_status_submitted": "Submitted",
+  "checklist_status_in_progress": "In Progress",
+  "checklist_status_missed": "Missed",
+
+  "checklist_history_title": "Checklist History",
+  "checklist_history_load_more": "Load more",
+  "checklist_already_submitted": "Checklist submitted for today",
+  "checklist_error_template_not_found": "Checklist template not found. Contact your supervisor.",
+  "checklist_reminder_notification_title": "Don''t forget your safety checklist",
+  "checklist_reminder_notification_body": "Your shift checklist is waiting — stay safe today.",
+
+  "checklist_optional_remaining": "{count} optional {count, plural, one{item} other{items}} remaining",
+  "@checklist_optional_remaining": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  }
+}
