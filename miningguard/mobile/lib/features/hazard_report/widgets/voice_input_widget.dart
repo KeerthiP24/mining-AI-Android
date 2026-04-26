@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 
@@ -37,10 +38,10 @@ class _VoiceInputWidgetState extends ConsumerState<VoiceInputWidget> {
     final hasPermission = await _recorder.hasPermission();
     if (!hasPermission) return;
 
-    final dir = Directory.systemTemp;
+    final dir = await getTemporaryDirectory();
     final path = '${dir.path}/voice_note_${DateTime.now().millisecondsSinceEpoch}.m4a';
 
-    await _recorder.start(const RecordConfig(), path: path);
+    await _recorder.start(const RecordConfig(encoder: AudioEncoder.aacLc), path: path);
     setState(() {
       _isRecording = true;
       _recordingPath = path;

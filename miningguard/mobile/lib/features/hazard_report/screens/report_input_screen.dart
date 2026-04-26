@@ -177,7 +177,15 @@ class _ReportInputScreenState extends ConsumerState<ReportInputScreen> {
 
   Future<void> _submit(BuildContext context) async {
     final user = ref.read(currentUserModelProvider).value;
-    if (user == null) return;
+    if (user == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Unable to submit: user not loaded. Please try again.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
 
     final messenger = ScaffoldMessenger.of(context);
     final navigator = Navigator.of(context);

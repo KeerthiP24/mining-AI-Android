@@ -252,10 +252,7 @@ class HazardReportModel {
     'status': status.firestoreValue,
     if (supervisorNote != null) 'supervisorNote': supervisorNote,
     'submittedAt': FieldValue.serverTimestamp(),
-    'acknowledgedAt': null,
-    'resolvedAt': null,
     'isOfflineCreated': isOfflineCreated,
-    'syncedAt': null,
   };
 
   // JSON serialization for Hive offline storage

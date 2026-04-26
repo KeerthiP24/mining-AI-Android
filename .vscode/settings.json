@@ -1,4 +1,5 @@
 {
     "terminal.integrated.cwd": "${workspaceFolder}",
-    "terminal.integrated.defaultProfile.windows": "PowerShell"
+    "terminal.integrated.defaultProfile.windows": "PowerShell",
+    "java.configuration.updateBuildConfiguration": "interactive"
 }

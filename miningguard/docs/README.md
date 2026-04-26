@@ -341,3 +341,6 @@ cd backend && python -m pytest ../test/ -v
 ---
 
 *MiningGuard · Flutter + FastAPI + Firebase · Stack: Dart / Python / Firestore*
+
+///
+backend:firebase emulators:start --only auth,firestore --project mininggaurd         

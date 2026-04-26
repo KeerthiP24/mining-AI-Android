@@ -1,5 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -30,11 +29,9 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  // Connect to local emulators in debug mode
-  if (kDebugMode) {
-    await FirebaseAuth.instance.useAuthEmulator('127.0.0.1', 9099);
-    FirebaseFirestore.instance.useFirestoreEmulator('127.0.0.1', 8081);
-  }
+  await FirebaseAppCheck.instance.activate(
+    androidProvider: AndroidProvider.debug,
+  );
 
   // FCM background handler (only on mobile — not available on web)
   if (!kIsWeb) {

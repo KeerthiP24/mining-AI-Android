@@ -19,6 +19,7 @@ dependencies:
   cloud_firestore: ^6.3.0
   firebase_storage: ^13.3.0
   firebase_messaging: ^16.2.0
+  firebase_app_check: ^0.4.3
 
   # State Management
   flutter_riverpod: ^2.5.1
@@ -44,15 +45,14 @@ dependencies:
   # Media
   image_picker: ^1.0.7
   flutter_image_compress: ^2.1.0
-  speech_to_text: ^6.6.0
-  record: ^5.1.2
-  flutter_sound: ^9.30.0
+  speech_to_text: '>=6.6.0 <8.0.0'
+  record: ^6.0.0
   cached_network_image: ^3.3.1
-  youtube_player_flutter: ^8.1.2
   video_player: ^2.8.3
 
   # Connectivity & Offline
   connectivity_plus: ^6.0.3
+  path_provider: ^2.1.5
 
   # Utilities
   timeago: ^3.6.1

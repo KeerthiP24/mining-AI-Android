@@ -88,11 +88,12 @@ class PhotoCaptureWidget extends ConsumerWidget {
     if (picked == null) return;
 
     final file = File(picked.path);
+    // Check if this is the first image BEFORE attaching
+    final existingCount = (ref.read(reportSubmissionProvider).value ?? const ReportDraft()).mediaFiles.length;
     notifier.attachMedia([file]);
 
-    // Trigger AI analysis on first image
-    final draft = ref.read(reportSubmissionProvider).value ?? const ReportDraft();
-    if (draft.mediaFiles.isEmpty) {
+    // Trigger AI analysis only on the first image
+    if (existingCount == 0) {
       ref.read(imageAnalysisProvider(file).future).then((result) {
         notifier.applyAiSuggestion(result);
       }).catchError((_) {});
