@@ -33,7 +33,7 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.notifyWorkerOnStatusChange = exports.notifySupervisorOnNewReport = exports.seedChecklistTemplates = exports.detectMissedChecklists = exports.updateComplianceRate = void 0;
+exports.onVideoWatched = exports.notifyWorkerOnStatusChange = exports.notifySupervisorOnNewReport = exports.seedChecklistTemplates = exports.detectMissedChecklists = exports.updateComplianceRate = void 0;
 const admin = __importStar(require("firebase-admin"));
 admin.initializeApp();
 var updateComplianceRate_1 = require("./updateComplianceRate");
@@ -46,4 +46,6 @@ var notifySupervisorOnNewReport_1 = require("./notifySupervisorOnNewReport");
 Object.defineProperty(exports, "notifySupervisorOnNewReport", { enumerable: true, get: function () { return notifySupervisorOnNewReport_1.notifySupervisorOnNewReport; } });
 var notifyWorkerOnStatusChange_1 = require("./notifyWorkerOnStatusChange");
 Object.defineProperty(exports, "notifyWorkerOnStatusChange", { enumerable: true, get: function () { return notifyWorkerOnStatusChange_1.notifyWorkerOnStatusChange; } });
+var onVideoWatched_1 = require("./onVideoWatched");
+Object.defineProperty(exports, "onVideoWatched", { enumerable: true, get: function () { return onVideoWatched_1.onVideoWatched; } });
 //# sourceMappingURL=index.js.map

@@ -30,7 +30,7 @@ class AiAnalysisResult {
   }
 
   static AiAnalysisResult safe() => const AiAnalysisResult(
-        hazardDetected: 'safe',
+        hazardDetected: 'unknown',
         confidence: 0.0,
         suggestedSeverity: HazardSeverity.low,
         recommendedAction: '',

@@ -9,6 +9,10 @@ import 'package:miningguard/features/auth/screens/signup_screen.dart';
 import 'package:miningguard/features/checklist/screens/checklist_history_screen.dart';
 import 'package:miningguard/features/checklist/screens/checklist_screen.dart';
 import 'package:miningguard/features/checklist/screens/checklist_success_screen.dart';
+import 'package:miningguard/features/education/domain/safety_video.dart';
+import 'package:miningguard/features/education/presentation/screens/category_browse_screen.dart';
+import 'package:miningguard/features/education/presentation/screens/education_screen.dart';
+import 'package:miningguard/features/education/presentation/screens/video_player_screen.dart';
 import 'package:miningguard/features/hazard_report/models/hazard_report_model.dart';
 import 'package:miningguard/features/hazard_report/screens/my_reports_screen.dart';
 import 'package:miningguard/features/hazard_report/screens/report_detail_screen.dart';
@@ -103,6 +107,12 @@ class HomeScreen extends StatelessWidget {
               onPressed: () => context.go(AppRoutes.checklistHistory),
               icon: const Icon(Icons.history),
               label: const Text('Checklist History'),
+            ),
+            const SizedBox(height: 12),
+            OutlinedButton.icon(
+              onPressed: () => context.go(AppRoutes.education),
+              icon: const Icon(Icons.play_circle_outline),
+              label: const Text('Safety Education'),
             ),
             const SizedBox(height: 12),
             TextButton(
@@ -339,8 +349,21 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: AppRoutes.education,
-        builder: (_, state) =>
-            const PlaceholderScreen(routeName: 'Safety Education'),
+        builder: (_, __) => const EducationScreen(),
+        routes: [
+          GoRoute(
+            path: 'player',
+            builder: (context, state) => VideoPlayerScreen(
+              video: state.extra as SafetyVideo,
+            ),
+          ),
+          GoRoute(
+            path: 'category/:categoryId',
+            builder: (context, state) => CategoryBrowseScreen(
+              category: state.pathParameters['categoryId']!,
+            ),
+          ),
+        ],
       ),
 
       // Supervisor

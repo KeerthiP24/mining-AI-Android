@@ -110,8 +110,13 @@ class ReportSubmissionNotifier extends StateNotifier<AsyncValue<ReportDraft>> {
     state = AsyncValue.data(_draft.copyWith(mediaFiles: updated));
   }
 
-  void attachVoiceNote(File file) {
-    state = AsyncValue.data(_draft.copyWith(voiceNoteFile: file));
+  void attachVoiceNote(File file, [String transcription = '']) {
+    state = AsyncValue.data(_draft.copyWith(
+      voiceNoteFile: file,
+      voiceTranscription: transcription.isNotEmpty
+          ? transcription
+          : _draft.voiceTranscription,
+    ));
   }
 
   void setDescription(String text) {
@@ -146,7 +151,11 @@ class ReportSubmissionNotifier extends StateNotifier<AsyncValue<ReportDraft>> {
   }
 
   Future<String> submit(UserModel user) async {
-    if (_draft.category == null) {
+    // Capture the draft BEFORE flipping to loading — once state is loading,
+    // state.value is null and the _draft getter falls back to const ReportDraft(),
+    // which would null out category/voiceNoteFile/aiAnalysis/mediaFiles mid-submit.
+    final draft = _draft;
+    if (draft.category == null) {
       throw const ReportException('Category is required');
     }
 
@@ -159,23 +168,33 @@ class ReportSubmissionNotifier extends StateNotifier<AsyncValue<ReportDraft>> {
 
       final tempId = 'tmp_${DateTime.now().millisecondsSinceEpoch}';
 
-      // Upload media files
-      final mediaUrls = <String>[];
-      for (final file in _draft.mediaFiles) {
-        final url = await uploadService.uploadImage(file, tempId);
-        mediaUrls.add(url);
-      }
+      // Check connectivity FIRST — if offline, skip uploads (would fail anyway).
+      final connectivity = await Connectivity().checkConnectivity();
+      final isOffline = connectivity.every((r) => r == ConnectivityResult.none);
 
-      // Upload voice note
+      var mediaUrls = const <String>[];
       String? voiceNoteUrl;
-      if (_draft.voiceNoteFile != null) {
-        voiceNoteUrl = await uploadService.uploadVoiceNote(_draft.voiceNoteFile!, tempId);
+      if (!isOffline) {
+        if (draft.mediaFiles.isNotEmpty) {
+          mediaUrls = await uploadService.uploadMedia(
+            user.mineId,
+            tempId,
+            draft.mediaFiles,
+          );
+        }
+        if (draft.voiceNoteFile != null) {
+          voiceNoteUrl = await uploadService.uploadVoiceNote(
+            user.mineId,
+            tempId,
+            draft.voiceNoteFile!,
+          );
+        }
       }
 
       // Build AI analysis data if present
       AiAnalysisData? aiData;
-      if (_draft.aiAnalysis != null) {
-        final ai = _draft.aiAnalysis!;
+      if (draft.aiAnalysis != null) {
+        final ai = draft.aiAnalysis!;
         aiData = AiAnalysisData(
           hazardDetected: ai.hazardDetected,
           confidence: ai.confidence,
@@ -189,22 +208,19 @@ class ReportSubmissionNotifier extends StateNotifier<AsyncValue<ReportDraft>> {
         uid: user.uid,
         mineId: user.mineId,
         supervisorId: '',
-        mineSection: _draft.mineSection,
-        inputMode: _draft.inputMode,
-        description: _draft.description,
-        voiceTranscription: _draft.voiceTranscription,
-        category: _draft.category!,
-        severity: _draft.severity,
+        mineSection: draft.mineSection,
+        inputMode: draft.inputMode,
+        description: draft.description,
+        voiceTranscription: draft.voiceTranscription,
+        category: draft.category!,
+        severity: draft.severity,
         mediaUrls: mediaUrls,
         voiceNoteUrl: voiceNoteUrl,
         aiAnalysis: aiData,
         status: ReportStatus.pending,
         submittedAt: DateTime.now(),
+        isOfflineCreated: isOffline,
       );
-
-      // Check connectivity
-      final connectivity = await Connectivity().checkConnectivity();
-      final isOffline = connectivity.every((r) => r == ConnectivityResult.none);
 
       String reportId;
       if (isOffline) {

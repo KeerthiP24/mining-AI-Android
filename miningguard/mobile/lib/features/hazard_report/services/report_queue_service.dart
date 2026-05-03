@@ -12,7 +12,7 @@ class ReportQueueService {
 
   final HazardReportRepository _repository;
 
-  static const _boxName = 'hazard_queue';
+  static const _boxName = 'offline_reports';
 
   StreamSubscription<List<ConnectivityResult>>? _connectivitySub;
 
@@ -27,7 +27,8 @@ class ReportQueueService {
   int get pendingCount => _box.length;
 
   Future<void> enqueue(HazardReportModel report) async {
-    final json = jsonEncode(report.toJson());
+    final marked = report.copyWith(isOfflineCreated: true);
+    final json = jsonEncode(marked.toJson());
     await _box.add(json);
   }
 

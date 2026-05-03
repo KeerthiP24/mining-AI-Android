@@ -72,5 +72,41 @@
     "placeholders": {
       "count": { "type": "int" }
     }
-  }
+  },
+
+  "education_tab_title": "Safety Education",
+  "video_of_day_label": "Video of the Day",
+  "continue_watching_label": "Continue Watching",
+  "browse_by_category_label": "Browse by Category",
+  "watch_now_button": "Watch Now",
+  "category_all": "All",
+  "category_ppe": "PPE",
+  "category_gas_ventilation": "Gas & Ventilation",
+  "category_roof_support": "Roof Support",
+  "category_emergency": "Emergency",
+  "category_machinery": "Machinery",
+  "quiz_heading": "Quick Check",
+  "quiz_question_of_total": "Question {current} of {total}",
+  "@quiz_question_of_total": {
+    "placeholders": {
+      "current": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "quiz_submit_button": "Submit",
+  "quiz_well_done_heading": "Well done!",
+  "quiz_points_awarded": "+{points} compliance points",
+  "@quiz_points_awarded": {
+    "placeholders": {
+      "points": { "type": "int" }
+    }
+  },
+  "quiz_try_again_heading": "Try again next time",
+  "quiz_continue_button": "Continue",
+  "source_dgms": "DGMS",
+  "source_msha": "MSHA",
+  "source_hse": "HSE",
+  "source_worksafe": "WorkSafe",
+  "source_custom": "Custom",
+  "education_empty_library": "No videos available yet."
 }

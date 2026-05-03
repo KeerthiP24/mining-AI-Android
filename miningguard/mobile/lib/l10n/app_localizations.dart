@@ -411,6 +411,150 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count} optional {count, plural, one{item} other{items}} remaining'**
   String checklist_optional_remaining(int count);
+
+  /// No description provided for @education_tab_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Safety Education'**
+  String get education_tab_title;
+
+  /// No description provided for @video_of_day_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Video of the Day'**
+  String get video_of_day_label;
+
+  /// No description provided for @continue_watching_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue Watching'**
+  String get continue_watching_label;
+
+  /// No description provided for @browse_by_category_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Browse by Category'**
+  String get browse_by_category_label;
+
+  /// No description provided for @watch_now_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Watch Now'**
+  String get watch_now_button;
+
+  /// No description provided for @category_all.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get category_all;
+
+  /// No description provided for @category_ppe.
+  ///
+  /// In en, this message translates to:
+  /// **'PPE'**
+  String get category_ppe;
+
+  /// No description provided for @category_gas_ventilation.
+  ///
+  /// In en, this message translates to:
+  /// **'Gas & Ventilation'**
+  String get category_gas_ventilation;
+
+  /// No description provided for @category_roof_support.
+  ///
+  /// In en, this message translates to:
+  /// **'Roof Support'**
+  String get category_roof_support;
+
+  /// No description provided for @category_emergency.
+  ///
+  /// In en, this message translates to:
+  /// **'Emergency'**
+  String get category_emergency;
+
+  /// No description provided for @category_machinery.
+  ///
+  /// In en, this message translates to:
+  /// **'Machinery'**
+  String get category_machinery;
+
+  /// No description provided for @quiz_heading.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Check'**
+  String get quiz_heading;
+
+  /// No description provided for @quiz_question_of_total.
+  ///
+  /// In en, this message translates to:
+  /// **'Question {current} of {total}'**
+  String quiz_question_of_total(int current, int total);
+
+  /// No description provided for @quiz_submit_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit'**
+  String get quiz_submit_button;
+
+  /// No description provided for @quiz_well_done_heading.
+  ///
+  /// In en, this message translates to:
+  /// **'Well done!'**
+  String get quiz_well_done_heading;
+
+  /// No description provided for @quiz_points_awarded.
+  ///
+  /// In en, this message translates to:
+  /// **'+{points} compliance points'**
+  String quiz_points_awarded(int points);
+
+  /// No description provided for @quiz_try_again_heading.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again next time'**
+  String get quiz_try_again_heading;
+
+  /// No description provided for @quiz_continue_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get quiz_continue_button;
+
+  /// No description provided for @source_dgms.
+  ///
+  /// In en, this message translates to:
+  /// **'DGMS'**
+  String get source_dgms;
+
+  /// No description provided for @source_msha.
+  ///
+  /// In en, this message translates to:
+  /// **'MSHA'**
+  String get source_msha;
+
+  /// No description provided for @source_hse.
+  ///
+  /// In en, this message translates to:
+  /// **'HSE'**
+  String get source_hse;
+
+  /// No description provided for @source_worksafe.
+  ///
+  /// In en, this message translates to:
+  /// **'WorkSafe'**
+  String get source_worksafe;
+
+  /// No description provided for @source_custom.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom'**
+  String get source_custom;
+
+  /// No description provided for @education_empty_library.
+  ///
+  /// In en, this message translates to:
+  /// **'No videos available yet.'**
+  String get education_empty_library;
 }
 
 class _AppLocalizationsDelegate

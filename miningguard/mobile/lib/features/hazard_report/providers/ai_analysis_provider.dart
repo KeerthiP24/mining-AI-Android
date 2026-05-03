@@ -15,8 +15,9 @@ final imageAnalysisProvider =
     final token = user != null ? await user.getIdToken() : null;
 
     final dio = Dio(BaseOptions(
-      connectTimeout: const Duration(seconds: 30),
-      receiveTimeout: const Duration(seconds: 30),
+      connectTimeout: const Duration(seconds: 10),
+      receiveTimeout: const Duration(seconds: 10),
+      sendTimeout: const Duration(seconds: 10),
     ));
 
     final formData = FormData.fromMap({
@@ -38,12 +39,10 @@ final imageAnalysisProvider =
 
     if (response.data == null) return AiAnalysisResult.safe();
     return AiAnalysisResult.fromJson(response.data!);
-  } on DioException catch (e) {
-    if (e.type == DioExceptionType.connectionTimeout ||
-        e.type == DioExceptionType.receiveTimeout ||
-        e.type == DioExceptionType.connectionError) {
-      return AiAnalysisResult.safe();
-    }
-    rethrow;
+  } on DioException {
+    // Backend unreachable / timeout — fall back so the worker can still submit.
+    return AiAnalysisResult.safe();
+  } catch (_) {
+    return AiAnalysisResult.safe();
   }
 });

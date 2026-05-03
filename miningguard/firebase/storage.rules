@@ -20,7 +20,17 @@ service firebase.storage {
     }
 
     // ── Hazard Report Media ───────────────────────────────────────────────────
+    // Path matches the mobile client: reports/{mineId}/{reportId}/{fileName}
     match /reports/{mineId}/{reportId}/{fileName} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated()
+          && isValidMediaFile()
+          && isUnderSizeLimit();
+      allow delete: if isAuthenticated();
+    }
+
+    // Legacy path retained for any pre-existing uploads.
+    match /hazard_reports/{reportId}/{mediaType}/{fileName} {
       allow read: if isAuthenticated();
       allow write: if isAuthenticated()
           && isValidMediaFile()

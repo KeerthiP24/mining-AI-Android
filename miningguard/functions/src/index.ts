@@ -7,3 +7,4 @@ export {detectMissedChecklists} from "./detectMissedChecklists";
 export {seedChecklistTemplates} from "./seedChecklistTemplates";
 export {notifySupervisorOnNewReport} from "./notifySupervisorOnNewReport";
 export {notifyWorkerOnStatusChange} from "./notifyWorkerOnStatusChange";
+export {onVideoWatched} from "./onVideoWatched";

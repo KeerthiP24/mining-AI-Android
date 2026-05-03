@@ -102,4 +102,4 @@ def test_detect_valid_image(authed_client: TestClient):
     assert isinstance(data["confidence"], float)
     assert 0.0 <= data["confidence"] <= 1.0
     assert isinstance(data["suggested_severity"], str)
-    assert isinstance(data["correction_recommendation"], str)
+    assert isinstance(data["recommended_action"], str)

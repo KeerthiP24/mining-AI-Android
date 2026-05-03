@@ -187,4 +187,80 @@ class AppLocalizationsTe extends AppLocalizations {
     );
     return '$count optional $_temp0 remaining';
   }
+
+  @override
+  String get education_tab_title => 'Safety Education';
+
+  @override
+  String get video_of_day_label => 'Video of the Day';
+
+  @override
+  String get continue_watching_label => 'Continue Watching';
+
+  @override
+  String get browse_by_category_label => 'Browse by Category';
+
+  @override
+  String get watch_now_button => 'Watch Now';
+
+  @override
+  String get category_all => 'All';
+
+  @override
+  String get category_ppe => 'PPE';
+
+  @override
+  String get category_gas_ventilation => 'Gas & Ventilation';
+
+  @override
+  String get category_roof_support => 'Roof Support';
+
+  @override
+  String get category_emergency => 'Emergency';
+
+  @override
+  String get category_machinery => 'Machinery';
+
+  @override
+  String get quiz_heading => 'Quick Check';
+
+  @override
+  String quiz_question_of_total(int current, int total) {
+    return 'Question $current of $total';
+  }
+
+  @override
+  String get quiz_submit_button => 'Submit';
+
+  @override
+  String get quiz_well_done_heading => 'Well done!';
+
+  @override
+  String quiz_points_awarded(int points) {
+    return '+$points compliance points';
+  }
+
+  @override
+  String get quiz_try_again_heading => 'Try again next time';
+
+  @override
+  String get quiz_continue_button => 'Continue';
+
+  @override
+  String get source_dgms => 'DGMS';
+
+  @override
+  String get source_msha => 'MSHA';
+
+  @override
+  String get source_hse => 'HSE';
+
+  @override
+  String get source_worksafe => 'WorkSafe';
+
+  @override
+  String get source_custom => 'Custom';
+
+  @override
+  String get education_empty_library => 'No videos available yet.';
 }

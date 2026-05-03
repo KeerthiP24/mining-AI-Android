@@ -49,10 +49,14 @@ dependencies:
   record: ^6.0.0
   cached_network_image: ^3.3.1
   video_player: ^2.8.3
+  youtube_player_flutter: ^9.0.0   # YouTube embed player (Phase 5)
 
   # Connectivity & Offline
   connectivity_plus: ^6.0.3
   path_provider: ^2.1.5
+
+  # Permissions (notification, etc.)
+  permission_handler: ^11.3.0
 
   # Utilities
   timeago: ^3.6.1

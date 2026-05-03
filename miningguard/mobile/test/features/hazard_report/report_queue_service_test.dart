@@ -24,8 +24,8 @@ void main() {
   });
 
   tearDown(() async {
-    if (Hive.isBoxOpen('hazard_queue')) {
-      final box = Hive.box<String>('hazard_queue');
+    if (Hive.isBoxOpen('offline_reports')) {
+      final box = Hive.box<String>('offline_reports');
       await box.clear();
     }
   });
@@ -64,7 +64,7 @@ void main() {
     test('flush leaves failed reports in queue', () async {
       await ReportQueueService.openBox();
       // Use a broken JSON entry to simulate a corrupt queue item
-      final box = Hive.box<String>('hazard_queue');
+      final box = Hive.box<String>('offline_reports');
       await box.add('{"invalid": true}'); // missing required reportId field
 
       final repo = HazardReportRepository(FakeFirebaseFirestore());

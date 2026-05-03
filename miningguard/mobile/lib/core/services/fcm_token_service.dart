@@ -1,8 +1,7 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:miningguard/features/auth/services/user_repository.dart';
+import 'package:permission_handler/permission_handler.dart';
 
-/// Registers and keeps the FCM token for the current user up to date in
-/// Firestore.  Accepts dependencies via constructor for testability.
 class FcmTokenService {
   FcmTokenService({
     required FirebaseMessaging messaging,
@@ -13,9 +12,27 @@ class FcmTokenService {
   final FirebaseMessaging _messaging;
   final UserRepository _userRepository;
 
-  /// Fetches the current FCM token and writes it to Firestore.
-  /// Also subscribes to token refreshes so the record stays current.
   Future<void> registerToken(String uid) async {
+    // Step 1 — Android 13+ runtime POST_NOTIFICATIONS permission. The
+    // OS-level system dialog only fires the first time; if the user has
+    // ever dismissed it the prompt won't reappear, so on a denial we open
+    // the app's notification settings page directly.
+    var status = await Permission.notification.status;
+    if (!status.isGranted) {
+      status = await Permission.notification.request();
+    }
+    if (status.isPermanentlyDenied || status.isDenied) {
+      await openAppSettings();
+    }
+
+    // Step 2 — Firebase / iOS-side permission (no-op on Android once
+    // POST_NOTIFICATIONS is granted).
+    await _messaging.requestPermission(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+
     final token = await _messaging.getToken();
     if (token != null) {
       await _userRepository.updateFcmToken(uid, token);

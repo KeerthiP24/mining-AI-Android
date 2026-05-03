@@ -78,6 +78,28 @@ class HazardReportRepository {
     return query
         .orderBy('submittedAt', descending: true)
         .snapshots()
-        .map((snap) => snap.docs.map(HazardReportModel.fromFirestore).toList());
+        .map((snap) {
+      final list = snap.docs.map(HazardReportModel.fromFirestore).toList();
+      // Secondary sort: critical severity first, preserving submittedAt desc within ties.
+      list.sort((a, b) {
+        final s = _severityRank(b.severity).compareTo(_severityRank(a.severity));
+        if (s != 0) return s;
+        return b.submittedAt.compareTo(a.submittedAt);
+      });
+      return list;
+    });
+  }
+
+  static int _severityRank(HazardSeverity s) {
+    switch (s) {
+      case HazardSeverity.critical:
+        return 3;
+      case HazardSeverity.high:
+        return 2;
+      case HazardSeverity.medium:
+        return 1;
+      case HazardSeverity.low:
+        return 0;
+    }
   }
 }

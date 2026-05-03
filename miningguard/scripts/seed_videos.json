@@ -1,0 +1,372 @@
+[
+  {
+    "videoId": "ppe_helmet_basics",
+    "title": {
+      "en": "Hard Hat & Cap Lamp Basics",
+      "hi": "Hard Hat & Cap Lamp Basics",
+      "bn": "Hard Hat & Cap Lamp Basics",
+      "te": "Hard Hat & Cap Lamp Basics",
+      "mr": "Hard Hat & Cap Lamp Basics",
+      "or": "Hard Hat & Cap Lamp Basics"
+    },
+    "description": {
+      "en": "How to fit and inspect your hard hat and cap lamp before every shift."
+    },
+    "category": "ppe",
+    "source": "DGMS",
+    "youtubeId": "4BxgTj0O0Mc",
+    "durationSeconds": 240,
+    "targetRoles": ["worker", "supervisor"],
+    "tags": ["helmet", "ppe", "cap_lamp"],
+    "quizQuestions": [
+      {
+        "questionId": "q1",
+        "question": {"en": "When should you inspect your hard hat?"},
+        "options": [
+          {"en": "Before every shift"},
+          {"en": "Once a month"},
+          {"en": "Only after damage"},
+          {"en": "Never"}
+        ],
+        "correctOptionIndex": 0,
+        "explanation": {"en": "Inspect daily — cracks or dents reduce impact protection."}
+      },
+      {
+        "questionId": "q2",
+        "question": {"en": "A cap lamp must be charged for at least how many hours?"},
+        "options": [
+          {"en": "Full shift duration"},
+          {"en": "30 minutes"},
+          {"en": "1 hour"},
+          {"en": "Doesn't matter"}
+        ],
+        "correctOptionIndex": 0,
+        "explanation": {"en": "Cap lamps must outlast your full shift."}
+      },
+      {
+        "questionId": "q3",
+        "question": {"en": "What should you do if the hard hat strap is frayed?"},
+        "options": [
+          {"en": "Replace the hard hat"},
+          {"en": "Tape it"},
+          {"en": "Ignore it"},
+          {"en": "Use both hands to hold it"}
+        ],
+        "correctOptionIndex": 0,
+        "explanation": {"en": "A damaged strap fails on impact — replace immediately."}
+      }
+    ]
+  },
+  {
+    "videoId": "ppe_self_rescuer",
+    "title": {"en": "Self-Rescuer Use & Emergency Steps"},
+    "description": {"en": "Correct deployment of self-contained self-rescuers (SCSR) underground."},
+    "category": "ppe",
+    "source": "MSHA",
+    "youtubeId": "4BxgTj0O0Mc",
+    "durationSeconds": 305,
+    "targetRoles": ["worker"],
+    "tags": ["scsr", "ppe", "emergency"],
+    "quizQuestions": [
+      {
+        "questionId": "q1",
+        "question": {"en": "How long does a typical SCSR provide breathable air?"},
+        "options": [
+          {"en": "60 minutes"}, {"en": "5 minutes"}, {"en": "12 hours"}, {"en": "Indefinite"}
+        ],
+        "correctOptionIndex": 0,
+        "explanation": {"en": "Most SCSRs are rated for ~60 minutes of escape breathing."}
+      },
+      {
+        "questionId": "q2",
+        "question": {"en": "When should you don your SCSR?"},
+        "options": [
+          {"en": "Immediately on alarm"}, {"en": "After leaving the mine"}, {"en": "Only if smoke is visible"}, {"en": "Before lunch break"}
+        ],
+        "correctOptionIndex": 0,
+        "explanation": {"en": "Don the SCSR immediately when an evacuation alarm sounds."}
+      },
+      {
+        "questionId": "q3",
+        "question": {"en": "Where should the SCSR be carried?"},
+        "options": [
+          {"en": "On your person at all times"}, {"en": "In the lunchbox"}, {"en": "At the mine entrance"}, {"en": "On the truck"}
+        ],
+        "correctOptionIndex": 0,
+        "explanation": {"en": "An SCSR is only useful if it's on you when an emergency hits."}
+      }
+    ]
+  },
+  {
+    "videoId": "gas_methane_monitoring",
+    "title": {"en": "Methane Monitoring & Action Levels"},
+    "description": {"en": "Understanding CH4 readings and required actions at 1%, 1.25%, and 2%."},
+    "category": "gas_ventilation",
+    "source": "DGMS",
+    "youtubeId": "4BxgTj0O0Mc",
+    "durationSeconds": 360,
+    "targetRoles": ["worker", "supervisor"],
+    "tags": ["methane", "gas", "ventilation"],
+    "quizQuestions": [
+      {
+        "questionId": "q1",
+        "question": {"en": "At what CH4 reading must work stop?"},
+        "options": [{"en": "1.25%"}, {"en": "5%"}, {"en": "0.1%"}, {"en": "10%"}],
+        "correctOptionIndex": 0,
+        "explanation": {"en": "Indian DGMS rules require work stoppage at 1.25% CH4."}
+      },
+      {
+        "questionId": "q2",
+        "question": {"en": "Methane is most explosive at what concentration?"},
+        "options": [{"en": "5–15%"}, {"en": "0.1%"}, {"en": "50%"}, {"en": "100%"}],
+        "correctOptionIndex": 0,
+        "explanation": {"en": "Methane is in its explosive range between 5% and 15% in air."}
+      },
+      {
+        "questionId": "q3",
+        "question": {"en": "Where should methane detectors be placed?"},
+        "options": [{"en": "Near the roof"}, {"en": "On the floor"}, {"en": "In your pocket"}, {"en": "Outside the mine"}],
+        "correctOptionIndex": 0,
+        "explanation": {"en": "Methane is lighter than air — it accumulates near the roof."}
+      }
+    ]
+  },
+  {
+    "videoId": "gas_ventilation_check",
+    "title": {"en": "Daily Ventilation Inspection"},
+    "description": {"en": "Pre-shift checks for adequate airflow and brattice integrity."},
+    "category": "gas_ventilation",
+    "source": "HSE",
+    "youtubeId": "4BxgTj0O0Mc",
+    "durationSeconds": 280,
+    "targetRoles": ["worker", "supervisor"],
+    "tags": ["ventilation", "gas", "airflow"],
+    "quizQuestions": [
+      {
+        "questionId": "q1",
+        "question": {"en": "What is a brattice used for?"},
+        "options": [{"en": "Directing airflow"}, {"en": "Lighting"}, {"en": "Communications"}, {"en": "Tool storage"}],
+        "correctOptionIndex": 0,
+        "explanation": {"en": "Brattices are temporary partitions that direct ventilation air."}
+      },
+      {
+        "questionId": "q2",
+        "question": {"en": "What sign indicates poor ventilation?"},
+        "options": [{"en": "Stale or warm air"}, {"en": "Bright lights"}, {"en": "Loud noise"}, {"en": "Dry floor"}],
+        "correctOptionIndex": 0,
+        "explanation": {"en": "Stagnant warm air is an early warning of inadequate flow."}
+      },
+      {
+        "questionId": "q3",
+        "question": {"en": "Who must approve a ventilation change?"},
+        "options": [{"en": "Authorised ventilation officer"}, {"en": "Any worker"}, {"en": "Surface manager"}, {"en": "Nobody"}],
+        "correctOptionIndex": 0,
+        "explanation": {"en": "Only the authorised ventilation officer can change the ventilation plan."}
+      }
+    ]
+  },
+  {
+    "videoId": "roof_support_basics",
+    "title": {"en": "Roof Bolting Patterns & Pre-checks"},
+    "description": {"en": "Recognising loose roof material and verifying bolt patterns."},
+    "category": "roof_support",
+    "source": "DGMS",
+    "youtubeId": "4BxgTj0O0Mc",
+    "durationSeconds": 420,
+    "targetRoles": ["worker", "supervisor"],
+    "tags": ["roof", "roof_fall", "roof_support", "bolting"],
+    "quizQuestions": [
+      {
+        "questionId": "q1",
+        "question": {"en": "What sound suggests a loose roof?"},
+        "options": [{"en": "Drummy / hollow tap"}, {"en": "Sharp ring"}, {"en": "No sound"}, {"en": "Crackling"}],
+        "correctOptionIndex": 0,
+        "explanation": {"en": "A drummy hollow sound when sounding the roof indicates loose material."}
+      },
+      {
+        "questionId": "q2",
+        "question": {"en": "What action is taken if loose roof is detected?"},
+        "options": [{"en": "Bar it down or install support"}, {"en": "Continue working"}, {"en": "Take a photo"}, {"en": "Wait for next shift"}],
+        "correctOptionIndex": 0,
+        "explanation": {"en": "Loose material must be barred down or supported before work continues."}
+      },
+      {
+        "questionId": "q3",
+        "question": {"en": "Roof bolts should be installed:"},
+        "options": [{"en": "Per the approved support plan"}, {"en": "Wherever convenient"}, {"en": "Only at corners"}, {"en": "Optional"}],
+        "correctOptionIndex": 0,
+        "explanation": {"en": "Bolt patterns must follow the engineered support plan."}
+      }
+    ]
+  },
+  {
+    "videoId": "roof_pillar_extraction",
+    "title": {"en": "Pillar Extraction Hazards"},
+    "description": {"en": "Sequence and warnings during depillaring operations."},
+    "category": "roof_support",
+    "source": "DGMS",
+    "youtubeId": "4BxgTj0O0Mc",
+    "durationSeconds": 380,
+    "targetRoles": ["worker", "supervisor"],
+    "tags": ["roof_fall", "roof_support", "pillar"],
+    "quizQuestions": [
+      {
+        "questionId": "q1",
+        "question": {"en": "What is a key risk during pillar extraction?"},
+        "options": [{"en": "Sudden roof fall"}, {"en": "Cold air"}, {"en": "Slow Wi-Fi"}, {"en": "Bright lights"}],
+        "correctOptionIndex": 0,
+        "explanation": {"en": "Pillar extraction can trigger sudden, large roof falls."}
+      },
+      {
+        "questionId": "q2",
+        "question": {"en": "Who plans the depillaring sequence?"},
+        "options": [{"en": "Mine management & DGMS"}, {"en": "Workers on the day"}, {"en": "Random selection"}, {"en": "Surface clerk"}],
+        "correctOptionIndex": 0,
+        "explanation": {"en": "Depillaring sequences are pre-approved by management and DGMS."}
+      },
+      {
+        "questionId": "q3",
+        "question": {"en": "Refuge stations should be:"},
+        "options": [{"en": "Identified before starting"}, {"en": "Built during emergency"}, {"en": "Optional"}, {"en": "On the surface only"}],
+        "correctOptionIndex": 0,
+        "explanation": {"en": "Refuge points must be located in advance, not improvised."}
+      }
+    ]
+  },
+  {
+    "videoId": "emergency_evacuation",
+    "title": {"en": "Underground Evacuation Procedure"},
+    "description": {"en": "Step-by-step evacuation when alarms sound."},
+    "category": "emergency",
+    "source": "MSHA",
+    "youtubeId": "4BxgTj0O0Mc",
+    "durationSeconds": 310,
+    "targetRoles": ["worker", "supervisor"],
+    "tags": ["emergency", "evacuation", "fire"],
+    "quizQuestions": [
+      {
+        "questionId": "q1",
+        "question": {"en": "First action on hearing an evacuation alarm?"},
+        "options": [{"en": "Don your SCSR"}, {"en": "Finish the task"}, {"en": "Call home"}, {"en": "Sit down"}],
+        "correctOptionIndex": 0,
+        "explanation": {"en": "Don your SCSR before doing anything else."}
+      },
+      {
+        "questionId": "q2",
+        "question": {"en": "What direction do you evacuate?"},
+        "options": [{"en": "Intake airway, away from smoke"}, {"en": "Toward the smoke"}, {"en": "Down to the deepest level"}, {"en": "Random"}],
+        "correctOptionIndex": 0,
+        "explanation": {"en": "Move into intake (fresh) airway, away from the smoke source."}
+      },
+      {
+        "questionId": "q3",
+        "question": {"en": "When can you remove your SCSR?"},
+        "options": [{"en": "Only at the surface or in fresh air"}, {"en": "After 5 min"}, {"en": "When tired"}, {"en": "Never"}],
+        "correctOptionIndex": 0,
+        "explanation": {"en": "Don't remove until in confirmed fresh air."}
+      }
+    ]
+  },
+  {
+    "videoId": "emergency_fire_response",
+    "title": {"en": "Underground Fire Response"},
+    "description": {"en": "Fighting incipient fires vs evacuating from a developed fire."},
+    "category": "emergency",
+    "source": "HSE",
+    "youtubeId": "4BxgTj0O0Mc",
+    "durationSeconds": 290,
+    "targetRoles": ["worker", "supervisor"],
+    "tags": ["fire", "emergency"],
+    "quizQuestions": [
+      {
+        "questionId": "q1",
+        "question": {"en": "When may a worker fight a fire?"},
+        "options": [{"en": "Only if small and trained"}, {"en": "Always"}, {"en": "Never"}, {"en": "If alone"}],
+        "correctOptionIndex": 0,
+        "explanation": {"en": "Only attempt firefighting on small fires you are trained to handle."}
+      },
+      {
+        "questionId": "q2",
+        "question": {"en": "What extinguisher type for electrical fires?"},
+        "options": [{"en": "CO2 or dry powder"}, {"en": "Water"}, {"en": "Foam"}, {"en": "Sand only"}],
+        "correctOptionIndex": 0,
+        "explanation": {"en": "Use CO2 or dry-powder extinguishers on live electrical equipment."}
+      },
+      {
+        "questionId": "q3",
+        "question": {"en": "If fire grows beyond control, you should:"},
+        "options": [{"en": "Withdraw and raise the alarm"}, {"en": "Continue fighting alone"}, {"en": "Hide"}, {"en": "Take photos"}],
+        "correctOptionIndex": 0,
+        "explanation": {"en": "Withdraw, alarm, and let the rescue team handle it."}
+      }
+    ]
+  },
+  {
+    "videoId": "machinery_pre_shift",
+    "title": {"en": "Pre-shift Machinery Inspection"},
+    "description": {"en": "What to inspect on shuttle cars, continuous miners, and drills."},
+    "category": "machinery",
+    "source": "DGMS",
+    "youtubeId": "4BxgTj0O0Mc",
+    "durationSeconds": 400,
+    "targetRoles": ["worker", "supervisor"],
+    "tags": ["machinery", "preshift", "electrical"],
+    "quizQuestions": [
+      {
+        "questionId": "q1",
+        "question": {"en": "Which item is part of pre-shift checks?"},
+        "options": [{"en": "Hydraulic leaks"}, {"en": "Operator's lunch"}, {"en": "Phone signal"}, {"en": "Weather"}],
+        "correctOptionIndex": 0,
+        "explanation": {"en": "Hydraulic leaks must be flagged before machinery is used."}
+      },
+      {
+        "questionId": "q2",
+        "question": {"en": "If a guard is missing you should:"},
+        "options": [{"en": "Tag out the machine"}, {"en": "Use it carefully"}, {"en": "Ignore it"}, {"en": "Guard the area with cones"}],
+        "correctOptionIndex": 0,
+        "explanation": {"en": "Missing guards mean the machine is not safe to operate — tag and lock it out."}
+      },
+      {
+        "questionId": "q3",
+        "question": {"en": "Who logs the pre-shift inspection?"},
+        "options": [{"en": "The operator"}, {"en": "The cleaner"}, {"en": "Nobody"}, {"en": "The supplier"}],
+        "correctOptionIndex": 0,
+        "explanation": {"en": "The operator records the pre-shift check in the machinery log."}
+      }
+    ]
+  },
+  {
+    "videoId": "machinery_lockout_tagout",
+    "title": {"en": "Lockout / Tagout for Maintenance"},
+    "description": {"en": "Isolating energy sources before any maintenance work."},
+    "category": "machinery",
+    "source": "WorkSafe",
+    "youtubeId": "4BxgTj0O0Mc",
+    "durationSeconds": 350,
+    "targetRoles": ["worker", "supervisor"],
+    "tags": ["machinery", "electrical", "lockout"],
+    "quizQuestions": [
+      {
+        "questionId": "q1",
+        "question": {"en": "Who removes a lockout tag?"},
+        "options": [{"en": "Only the worker who applied it"}, {"en": "Anyone"}, {"en": "The supervisor only"}, {"en": "The cleaner"}],
+        "correctOptionIndex": 0,
+        "explanation": {"en": "Only the person who applied the lock may remove it."}
+      },
+      {
+        "questionId": "q2",
+        "question": {"en": "Energy sources to isolate include:"},
+        "options": [{"en": "Electrical, hydraulic, pneumatic"}, {"en": "Only electrical"}, {"en": "None — modern machines are safe"}, {"en": "Only fuel"}],
+        "correctOptionIndex": 0,
+        "explanation": {"en": "All stored or potential energy sources must be isolated."}
+      },
+      {
+        "questionId": "q3",
+        "question": {"en": "Before maintenance, also:"},
+        "options": [{"en": "Verify zero energy state"}, {"en": "Trust the breaker label"}, {"en": "Skip if quick"}, {"en": "Wear sandals"}],
+        "correctOptionIndex": 0,
+        "explanation": {"en": "Always test that the equipment is at zero energy before working on it."}
+      }
+    ]
+  }
+]

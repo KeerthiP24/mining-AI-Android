@@ -76,7 +76,7 @@ class ImageDetectionModel:
                 hazard_detected=hazard,
                 confidence=top_confidence,
                 suggested_severity=severity,
-                correction_recommendation=recommendation,
+                recommended_action=recommendation,
                 processing_time_ms=elapsed_ms,
             )
         except Exception as exc:  # noqa: BLE001
@@ -116,7 +116,7 @@ class ImageDetectionModel:
             hazard_detected="safe",
             confidence=0.50,
             suggested_severity="low",
-            correction_recommendation="No immediate action required. (TensorFlow not available.)",
+            recommended_action="No immediate action required. (TensorFlow not available.)",
             processing_time_ms=elapsed_ms,
         )
 

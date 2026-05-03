@@ -2,8 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
 
+import '../../../core/router/app_router.dart';
 import '../../../features/auth/providers/auth_providers.dart';
 import '../models/ai_analysis_result_model.dart';
 import '../models/hazard_report_model.dart';
@@ -188,7 +190,6 @@ class _ReportInputScreenState extends ConsumerState<ReportInputScreen> {
     }
 
     final messenger = ScaffoldMessenger.of(context);
-    final navigator = Navigator.of(context);
 
     try {
       final reportId = await ref.read(reportSubmissionProvider.notifier).submit(user);
@@ -203,7 +204,9 @@ class _ReportInputScreenState extends ConsumerState<ReportInputScreen> {
         content: Text(msg),
         backgroundColor: Colors.green,
       ));
-      navigator.pop();
+      // The screen was opened with context.go(), which replaces the stack.
+      // Navigator.pop() would leave nothing to display — go to My Reports instead.
+      context.go(AppRoutes.myReports);
     } catch (_) {
       // Error shown in body via submissionAsync.hasError
     }
