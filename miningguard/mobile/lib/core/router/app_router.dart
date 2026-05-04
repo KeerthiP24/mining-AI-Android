@@ -6,9 +6,12 @@ import 'package:miningguard/features/auth/screens/language_selection_screen.dart
 import 'package:miningguard/features/auth/screens/login_screen.dart';
 import 'package:miningguard/features/auth/screens/profile_screen.dart';
 import 'package:miningguard/features/auth/screens/signup_screen.dart';
+import 'package:miningguard/features/admin/screens/admin_panel_screen.dart'
+    as admin_panel;
 import 'package:miningguard/features/checklist/screens/checklist_history_screen.dart';
 import 'package:miningguard/features/checklist/screens/checklist_screen.dart';
 import 'package:miningguard/features/checklist/screens/checklist_success_screen.dart';
+import 'package:miningguard/features/dashboard/screens/worker_dashboard_screen.dart';
 import 'package:miningguard/features/education/domain/safety_video.dart';
 import 'package:miningguard/features/education/presentation/screens/category_browse_screen.dart';
 import 'package:miningguard/features/education/presentation/screens/education_screen.dart';
@@ -17,6 +20,9 @@ import 'package:miningguard/features/hazard_report/models/hazard_report_model.da
 import 'package:miningguard/features/hazard_report/screens/my_reports_screen.dart';
 import 'package:miningguard/features/hazard_report/screens/report_detail_screen.dart';
 import 'package:miningguard/features/hazard_report/screens/report_input_screen.dart';
+import 'package:miningguard/features/supervisor/screens/supervisor_dashboard_screen.dart'
+    as supervisor_dashboard;
+import 'package:miningguard/features/supervisor/screens/supervisor_worker_detail_screen.dart';
 import 'package:miningguard/shared/models/user_model.dart';
 
 // ── Route constants ───────────────────────────────────────────────────────────
@@ -70,120 +76,11 @@ class _SplashScreen extends StatelessWidget {
   }
 }
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Worker Dashboard')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.home, size: 64, color: Colors.amber),
-            const SizedBox(height: 16),
-            const Text('Worker Dashboard'),
-            const SizedBox(height: 24),
-            FilledButton.icon(
-              onPressed: () => context.go(AppRoutes.checklist),
-              icon: const Icon(Icons.checklist),
-              label: const Text("Today's Safety Checklist"),
-            ),
-            const SizedBox(height: 12),
-            FilledButton.icon(
-              onPressed: () => context.go(AppRoutes.reportHazard),
-              icon: const Icon(Icons.warning_amber),
-              label: const Text('Report Hazard'),
-            ),
-            const SizedBox(height: 12),
-            OutlinedButton.icon(
-              onPressed: () => context.go(AppRoutes.myReports),
-              icon: const Icon(Icons.list_alt),
-              label: const Text('My Hazard Reports'),
-            ),
-            const SizedBox(height: 12),
-            OutlinedButton.icon(
-              onPressed: () => context.go(AppRoutes.checklistHistory),
-              icon: const Icon(Icons.history),
-              label: const Text('Checklist History'),
-            ),
-            const SizedBox(height: 12),
-            OutlinedButton.icon(
-              onPressed: () => context.go(AppRoutes.education),
-              icon: const Icon(Icons.play_circle_outline),
-              label: const Text('Safety Education'),
-            ),
-            const SizedBox(height: 12),
-            TextButton(
-              onPressed: () => context.go(AppRoutes.workerProfile),
-              child: const Text('My Profile'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class SupervisorDashboardScreen extends StatelessWidget {
-  const SupervisorDashboardScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Supervisor Dashboard')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.supervisor_account, size: 64, color: Colors.amber),
-            const SizedBox(height: 16),
-            const Text('Supervisor Dashboard'),
-            const SizedBox(height: 24),
-            FilledButton.icon(
-              onPressed: () => context.go(AppRoutes.pendingReports),
-              icon: const Icon(Icons.warning_amber),
-              label: const Text('Mine Reports'),
-            ),
-            const SizedBox(height: 12),
-            ElevatedButton(
-              onPressed: () => context.go(AppRoutes.workerProfile),
-              child: const Text('My Profile'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class AdminPanelScreen extends StatelessWidget {
-  const AdminPanelScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Admin Panel')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.admin_panel_settings,
-                size: 64, color: Colors.amber),
-            const SizedBox(height: 16),
-            const Text('Admin Panel — Phase 3 coming soon'),
-            const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: () => context.go(AppRoutes.workerProfile),
-              child: const Text('My Profile'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
+// Phase 7 — the in-router placeholder HomeScreen, SupervisorDashboardScreen,
+// and AdminPanelScreen have been replaced by real implementations under
+// `lib/features/dashboard/`, `lib/features/supervisor/`, and
+// `lib/features/admin/` respectively. They are imported above and wired
+// directly into the GoRoute builders below.
 
 class PlaceholderScreen extends StatelessWidget {
   const PlaceholderScreen({super.key, required this.routeName});
@@ -311,7 +208,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       // Worker
       GoRoute(
         path: AppRoutes.workerHome,
-        builder: (_, __) => const HomeScreen(),
+        builder: (_, __) => const WorkerDashboardScreen(),
       ),
       GoRoute(
         path: AppRoutes.workerProfile,
@@ -369,7 +266,17 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       // Supervisor
       GoRoute(
         path: AppRoutes.supervisorDashboard,
-        builder: (_, __) => const SupervisorDashboardScreen(),
+        builder: (_, __) =>
+            const supervisor_dashboard.SupervisorDashboardScreen(),
+        routes: [
+          GoRoute(
+            path: 'worker/:uid',
+            name: 'supervisorWorkerDetail',
+            builder: (_, state) => SupervisorWorkerDetailScreen(
+              workerUid: state.pathParameters['uid']!,
+            ),
+          ),
+        ],
       ),
       GoRoute(
         path: AppRoutes.workersList,
@@ -379,7 +286,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: AppRoutes.workerDetail,
         builder: (context, state) {
           final uid = state.pathParameters['uid'] ?? '';
-          return PlaceholderScreen(routeName: 'Worker Detail: $uid');
+          return SupervisorWorkerDetailScreen(workerUid: uid);
         },
       ),
       GoRoute(
@@ -397,7 +304,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       // Admin
       GoRoute(
         path: AppRoutes.adminPanel,
-        builder: (_, __) => const AdminPanelScreen(),
+        builder: (_, __) => const admin_panel.AdminPanelScreen(),
       ),
       GoRoute(
         path: AppRoutes.userManagement,

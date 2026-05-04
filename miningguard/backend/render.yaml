@@ -1,0 +1,25 @@
+# Render.com blueprint for the MiningGuard AI backend.
+# Push this to a connected repo, or use it as a reference when wiring up the
+# service through the Render dashboard.
+services:
+  - type: web
+    name: miningguard-ai
+    runtime: python
+    rootDir: miningguard/backend
+    plan: starter
+    buildCommand: |
+      pip install -r requirements.txt
+      python -m app.ml.risk_train
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: DEBUG
+        value: "false"
+      - key: SKIP_AUTH
+        value: "false"
+      - key: FIREBASE_PROJECT_ID
+        sync: false  # set in dashboard
+      - key: GOOGLE_APPLICATION_CREDENTIALS_JSON
+        sync: false  # set in dashboard — paste full service-account JSON

@@ -71,13 +71,26 @@ def test_health(client: TestClient):
 
 
 def test_detect_no_auth(client: TestClient):
-    """Missing Authorization header → 403 (FastAPI HTTPBearer behaviour when header absent)."""
-    png = _make_png_bytes()
-    resp = client.post(
-        "/api/v1/image/detect",
-        files={"file": ("hazard.png", io.BytesIO(png), "image/png")},
-    )
-    assert resp.status_code == 403
+    """Missing Authorization header behaviour.
+
+    Phase 6 added a `SKIP_AUTH` bypass for development. When the bypass is
+    active (the default for the test runner), unauthenticated requests
+    succeed using a synthetic dev user. Toggle the flag off to assert the
+    production-mode 401 behaviour.
+    """
+    from app.config import settings
+
+    original = settings.skip_auth
+    settings.skip_auth = False
+    try:
+        png = _make_png_bytes()
+        resp = client.post(
+            "/api/v1/image/detect",
+            files={"file": ("hazard.png", io.BytesIO(png), "image/png")},
+        )
+        assert resp.status_code == 401
+    finally:
+        settings.skip_auth = original
 
 
 def test_detect_non_image(authed_client: TestClient):

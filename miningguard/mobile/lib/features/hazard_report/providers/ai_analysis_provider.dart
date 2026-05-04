@@ -1,48 +1,24 @@
 import 'dart:io';
 
-import 'package:dio/dio.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/services/ai_service.dart';
 import '../models/ai_analysis_result_model.dart';
 
-const _aiEndpoint = 'http://localhost:8000/api/v1/image/detect';
-
+/// Sends [imageFile] to the FastAPI backend's `/image/detect` endpoint and
+/// returns the parsed [AiAnalysisResult].
+///
+/// Falls back to [AiAnalysisResult.safe] when the backend is unreachable or
+/// returns malformed data so the worker can still submit a hazard report.
 final imageAnalysisProvider =
     FutureProvider.family<AiAnalysisResult, File>((ref, imageFile) async {
+  final ai = ref.watch(aiServiceProvider);
   try {
-    final user = FirebaseAuth.instance.currentUser;
-    final token = user != null ? await user.getIdToken() : null;
-
-    final dio = Dio(BaseOptions(
-      connectTimeout: const Duration(seconds: 10),
-      receiveTimeout: const Duration(seconds: 10),
-      sendTimeout: const Duration(seconds: 10),
-    ));
-
-    final formData = FormData.fromMap({
-      'file': await MultipartFile.fromFile(
-        imageFile.path,
-        filename: 'hazard.jpg',
-      ),
-    });
-
-    final response = await dio.post<Map<String, dynamic>>(
-      _aiEndpoint,
-      data: formData,
-      options: Options(
-        headers: {
-          if (token != null) 'Authorization': 'Bearer $token',
-        },
-      ),
-    );
-
-    if (response.data == null) return AiAnalysisResult.safe();
-    return AiAnalysisResult.fromJson(response.data!);
-  } on DioException {
-    // Backend unreachable / timeout — fall back so the worker can still submit.
-    return AiAnalysisResult.safe();
+    final data = await ai.detectImageHazard(imageFile);
+    if (data == null) return AiAnalysisResult.safe();
+    return AiAnalysisResult.fromJson(data);
   } catch (_) {
+    // Network / 5xx / parsing errors should not block report submission.
     return AiAnalysisResult.safe();
   }
 });

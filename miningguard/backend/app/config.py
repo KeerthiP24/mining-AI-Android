@@ -26,6 +26,14 @@ class Settings(BaseSettings):
     risk_model_path: str = "models/risk_model.pkl"
     image_model_path: str = "models/image_model.h5"
 
+    # Development bypass — when true, skips Firebase token verification and
+    # uses X-Dev-UID / X-Dev-Role headers instead. NEVER enable in production.
+    skip_auth: bool = False
+
+    # FCM cooldown to prevent alert spam: minimum hours between same alert
+    # type for the same user.
+    alert_cooldown_hours: int = 24
+
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"

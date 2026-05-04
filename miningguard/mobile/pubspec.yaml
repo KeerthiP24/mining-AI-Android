@@ -67,6 +67,11 @@ dependencies:
   fl_chart: ^0.67.0
   shimmer: ^3.0.0
 
+  # Phase 7 — dashboards & analytics
+  share_plus: ^12.0.2      # share shift report (^12 needed for mime^2 / firebase_storage 13)
+  file_picker: ^8.0.7      # CSV import in admin panel
+  url_launcher: ^6.2.6     # open YouTube + external links
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

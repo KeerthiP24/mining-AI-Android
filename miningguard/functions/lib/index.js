@@ -33,7 +33,7 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.onVideoWatched = exports.notifyWorkerOnStatusChange = exports.notifySupervisorOnNewReport = exports.seedChecklistTemplates = exports.detectMissedChecklists = exports.updateComplianceRate = void 0;
+exports.recomputeDashboardCounters = exports.onHazardReportStatusChangeDenorm = exports.onHazardReportCreatedDenorm = exports.dailyResetTodayChecklistFlag = exports.onChecklistSubmittedDenorm = exports.dailyBehaviorAnalysis = exports.onHazardReportCreatedAi = exports.onChecklistStatusChange = exports.onVideoWatched = exports.notifyWorkerOnStatusChange = exports.notifySupervisorOnNewReport = exports.seedChecklistTemplates = exports.detectMissedChecklists = exports.updateComplianceRate = void 0;
 const admin = __importStar(require("firebase-admin"));
 admin.initializeApp();
 var updateComplianceRate_1 = require("./updateComplianceRate");
@@ -48,4 +48,16 @@ var notifyWorkerOnStatusChange_1 = require("./notifyWorkerOnStatusChange");
 Object.defineProperty(exports, "notifyWorkerOnStatusChange", { enumerable: true, get: function () { return notifyWorkerOnStatusChange_1.notifyWorkerOnStatusChange; } });
 var onVideoWatched_1 = require("./onVideoWatched");
 Object.defineProperty(exports, "onVideoWatched", { enumerable: true, get: function () { return onVideoWatched_1.onVideoWatched; } });
+// Phase 6 — AI-backend triggers
+var aiTriggers_1 = require("./aiTriggers");
+Object.defineProperty(exports, "onChecklistStatusChange", { enumerable: true, get: function () { return aiTriggers_1.onChecklistStatusChange; } });
+Object.defineProperty(exports, "onHazardReportCreatedAi", { enumerable: true, get: function () { return aiTriggers_1.onHazardReportCreatedAi; } });
+Object.defineProperty(exports, "dailyBehaviorAnalysis", { enumerable: true, get: function () { return aiTriggers_1.dailyBehaviorAnalysis; } });
+// Phase 7 — dashboard counter denormalisation
+var denormaliseDashboardCounters_1 = require("./denormaliseDashboardCounters");
+Object.defineProperty(exports, "onChecklistSubmittedDenorm", { enumerable: true, get: function () { return denormaliseDashboardCounters_1.onChecklistSubmittedDenorm; } });
+Object.defineProperty(exports, "dailyResetTodayChecklistFlag", { enumerable: true, get: function () { return denormaliseDashboardCounters_1.dailyResetTodayChecklistFlag; } });
+Object.defineProperty(exports, "onHazardReportCreatedDenorm", { enumerable: true, get: function () { return denormaliseDashboardCounters_1.onHazardReportCreatedDenorm; } });
+Object.defineProperty(exports, "onHazardReportStatusChangeDenorm", { enumerable: true, get: function () { return denormaliseDashboardCounters_1.onHazardReportStatusChangeDenorm; } });
+Object.defineProperty(exports, "recomputeDashboardCounters", { enumerable: true, get: function () { return denormaliseDashboardCounters_1.recomputeDashboardCounters; } });
 //# sourceMappingURL=index.js.map

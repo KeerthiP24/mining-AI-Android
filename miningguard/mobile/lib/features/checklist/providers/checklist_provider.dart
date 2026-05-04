@@ -24,7 +24,7 @@ final checklistGenerationServiceProvider =
   );
 });
 
-final aiServiceProvider = Provider<AiService>((ref) => AiService());
+// aiServiceProvider is exported from core/services/ai_service.dart now.
 
 // ── Current checklist stream ──────────────────────────────────────────────────
 

@@ -23,6 +23,13 @@ class UserModel {
     this.fcmToken,
     required this.createdAt,
     required this.lastActiveAt,
+    // Phase 7 — denormalised dashboard fields
+    this.email,
+    this.mineName,
+    this.todayChecklistDone = false,
+    this.pendingReportCount = 0,
+    this.riskFactors = const <String>[],
+    this.isActive = true,
   });
 
   final String uid;
@@ -42,7 +49,20 @@ class UserModel {
   final DateTime createdAt;
   final DateTime lastActiveAt;
 
+  // Phase 7 — dashboard support fields. The first three are denormalised by
+  // Cloud Functions: when those CFs aren't deployed yet they default to safe
+  // empty values so the UI keeps rendering rather than crashing.
+  final String? email;
+  final String? mineName;
+  final bool todayChecklistDone;
+  final int pendingReportCount;
+  final List<String> riskFactors;
+  final bool isActive;
+
   bool get isHighRisk => riskLevel == 'high';
+
+  /// Spec-spelling alias used by Phase 7 widgets.
+  String get name => fullName;
 
   factory UserModel.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
@@ -64,6 +84,13 @@ class UserModel {
       createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
       lastActiveAt:
           (data['lastActiveAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      email: data['email'] as String?,
+      mineName: data['mineName'] as String?,
+      todayChecklistDone: data['todayChecklistDone'] as bool? ?? false,
+      pendingReportCount: (data['pendingReportCount'] as num?)?.toInt() ?? 0,
+      riskFactors: (data['riskFactors'] as List?)?.whereType<String>().toList()
+          ?? const <String>[],
+      isActive: data['isActive'] as bool? ?? true,
     );
   }
 
@@ -85,6 +112,12 @@ class UserModel {
       if (fcmToken != null) 'fcmToken': fcmToken,
       'createdAt': Timestamp.fromDate(createdAt),
       'lastActiveAt': Timestamp.fromDate(lastActiveAt),
+      if (email != null) 'email': email,
+      if (mineName != null) 'mineName': mineName,
+      'todayChecklistDone': todayChecklistDone,
+      'pendingReportCount': pendingReportCount,
+      'riskFactors': riskFactors,
+      'isActive': isActive,
     };
   }
 
@@ -103,6 +136,12 @@ class UserModel {
     String? lastChecklistDate,
     String? fcmToken,
     DateTime? lastActiveAt,
+    String? email,
+    String? mineName,
+    bool? todayChecklistDone,
+    int? pendingReportCount,
+    List<String>? riskFactors,
+    bool? isActive,
   }) {
     return UserModel(
       uid: uid,
@@ -122,6 +161,12 @@ class UserModel {
       fcmToken: fcmToken ?? this.fcmToken,
       createdAt: createdAt,
       lastActiveAt: lastActiveAt ?? this.lastActiveAt,
+      email: email ?? this.email,
+      mineName: mineName ?? this.mineName,
+      todayChecklistDone: todayChecklistDone ?? this.todayChecklistDone,
+      pendingReportCount: pendingReportCount ?? this.pendingReportCount,
+      riskFactors: riskFactors ?? this.riskFactors,
+      isActive: isActive ?? this.isActive,
     );
   }
 

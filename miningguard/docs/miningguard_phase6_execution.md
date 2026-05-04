@@ -1,3 +1,4 @@
+
 # MiningGuard — Phase 6 Execution Prompt
 ## AI Backend & Machine Learning
 ### Complete Step-by-Step Guide for Claude Code

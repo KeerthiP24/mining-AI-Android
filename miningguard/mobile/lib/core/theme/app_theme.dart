@@ -23,6 +23,15 @@ class AppTheme {
   static const Color severityHigh = Color(0xFFEF4444);     // Red
   static const Color severityCritical = Color(0xFF7F1D1D); // Deep red
 
+  // ── Report Status Colors (Phase 7 — supervisor dashboard) ────────────────
+  static const Color statusPending = Color(0xFF6A1B9A);
+  static const Color statusAcknowledged = Color(0xFF0277BD);
+  static const Color statusInProgress = Color(0xFFF57F17);
+  static const Color statusResolved = Color(0xFF2E7D32);
+
+  // ── Compliance threshold (drawn as dashed line on charts) ────────────────
+  static const double complianceThreshold = 0.80;
+
   // ── Light Theme ───────────────────────────────────────────────────────────
   static ThemeData get lightTheme {
     return ThemeData(

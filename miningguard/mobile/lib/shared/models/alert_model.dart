@@ -25,9 +25,12 @@ class AlertModel {
 
   factory AlertModel.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
+    // Phase 6 backend writes `uid`; older Phase 4 docs used `userId`.
+    final ownerId =
+        data['userId'] as String? ?? data['uid'] as String? ?? '';
     return AlertModel(
       id: doc.id,
-      userId: data['userId'] as String? ?? '',
+      userId: ownerId,
       type: data['type'] as String? ?? '',
       title: data['title'] as String? ?? '',
       message: data['message'] as String? ?? '',

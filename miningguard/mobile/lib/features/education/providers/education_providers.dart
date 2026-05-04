@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/services/ai_service.dart';
 import '../../../features/auth/providers/auth_providers.dart';
 import '../../../shared/providers/firebase_providers.dart';
 import '../data/education_repository.dart';
@@ -44,14 +46,34 @@ final videosByCategoryProvider = StreamProvider.autoDispose
 
 // ── Video of the Day ─────────────────────────────────────────────────────────
 
-/// Resolves today's recommended video. Cached on the user document — calls
-/// within the same calendar day return the cached selection without rerunning
-/// selection logic (handled inside [VideoOfDayService]).
+/// Resolves today's recommended video.
+///
+/// Phase 6: try the FastAPI `/recommendations/{uid}` endpoint first — it has
+/// access to the same signals plus the trained recommendation engine. If
+/// the backend is unreachable, returns no video, or returns an id that
+/// isn't present in the local Firestore library, fall back to the Phase 5
+/// client-side [VideoOfDayService] so the screen still renders something
+/// useful offline.
 final videoOfDayProvider = FutureProvider.autoDispose<SafetyVideo?>((ref) async {
   final user = ref.watch(currentUserModelProvider).valueOrNull;
   if (user == null) return null;
   final library = await ref.watch(videoLibraryProvider.future);
   if (library.isEmpty) return null;
+
+  // Try the backend recommendation engine first.
+  try {
+    final ai = ref.watch(aiServiceProvider);
+    final response = await ai.getRecommendations(user.uid);
+    final vid = response?['video_of_the_day']?['video_id'] as String?;
+    if (vid != null && vid.isNotEmpty) {
+      final hit = library.where((v) => v.videoId == vid);
+      if (hit.isNotEmpty) return hit.first;
+    }
+  } catch (e) {
+    debugPrint('[videoOfDayProvider] backend recommendation failed: $e');
+  }
+
+  // Phase 5 fallback (client-side selection + Firestore caching).
   return ref.watch(videoOfDayServiceProvider).getVideoForUser(
         user: user,
         allVideos: library,

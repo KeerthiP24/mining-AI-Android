@@ -1,6 +1,11 @@
 from pydantic import BaseModel, Field
 
 
+class RiskPredictByUidRequest(BaseModel):
+    """Phase 6 default: uid-only request — features are fetched from Firestore."""
+    uid: str = Field(..., description="Worker's Firebase UID")
+
+
 class RiskPredictionRequest(BaseModel):
     """
     Input features for the risk prediction model.
@@ -42,6 +47,11 @@ class RiskContributingFactor(BaseModel):
 
 
 class RiskPredictionResponse(BaseModel):
+    """Response wrapper. `protected_namespaces=()` so Pydantic doesn't warn
+    about the `model_confidence` field shadowing its `model_*` namespace."""
+
+    model_config = {"protected_namespaces": ()}
+
     uid: str
     risk_level: str          # "low" | "medium" | "high"
     risk_score: float        # 0–100
